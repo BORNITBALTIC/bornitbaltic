@@ -94,8 +94,10 @@ oma ketas. `web` ketas on `/app/media`, seal elavad pildid ja PDFid.
 arenduses, tootmises mitte. Kui kollektsioone muudad:
 
 ```bash
-# aja DATABASE_URI Railway Postgresi peale (avalik TCP proxy)
-DATABASE_URI=postgresql://... PAYLOAD_MIGRATING=true npx payload migrate:create --name mis-muutus
+# 1. ava Postgresile ajutine avalik port (Railway UIs: postgres -> Settings -> Networking
+#    -> TCP Proxy, port 5432). Peale tood sulge see uuesti.
+# 2. genereeri migratsioon selle vastu
+DATABASE_URI=postgresql://postgres:...@<proxy>:<port>/railway PAYLOAD_MIGRATING=true   npx payload migrate:create --name mis-muutus
 git add src/migrations && git commit && git push
 ```
 
@@ -116,9 +118,14 @@ Keskkonnamuutujad (`web`):
 
 Ilma SMTP andmeteta paring salvestub Payloadi, aga kirja valja ei lahe.
 
-**Sisu uuesti importimine serveris**: pane `preDeployCommand` ajutiselt
-`npm run payload migrate && npm run import:bornit`, tee deploy, siis vota
-tagasi. Import tombab pildid ja PDFid vanalt lehelt ja on idempotentne.
+**Sisu uuesti importimine serveris**: sea muutuja `RUN_IMPORT=true` ja tee
+deploy. `scripts/start.mjs` kaivitab serveri ja laseb impordi taustal, kus
+ketas `/app/media` on kylge pandud. Peale tood sea `RUN_IMPORT=false`.
+Import tombab pildid ja PDFid vanalt lehelt ja on idempotentne: olemasolev
+kirje uuendatakse, puuduv fail laetakse uuesti.
+
+Eeldeploy (`preDeployCommand`) ei sobi impordiks, sest seal ei ole ketast
+veel kylge pandud ja failid kaoksid.
 
 **Oma domeen**: lisa `web` teenusele custom domain bornitbaltic.ee ja
 suuna DNS Railway peale. Seejarel muuda `NEXT_PUBLIC_SERVER_URL`.
