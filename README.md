@@ -87,24 +87,41 @@ python tools/bornit_urls.py     # koik 178 vana URLi peavad andma 200
 
 ## Railway
 
-1. Lisa projekti **PostgreSQL** ja vota selle `DATABASE_URL`.
-2. Lisa teenusele **Volume**, uhenduspunkt `/app/media`.
-3. Keskkonnamuutujad:
+Projekt on juba pusti: teenused `web` (see repo) ja `postgres`, molemal
+oma ketas. `web` ketas on `/app/media`, seal elavad pildid ja PDFid.
 
-   | Muutuja | Vaartus |
-   | --- | --- |
-   | `DATABASE_URI` | Postgresi aadress |
-   | `PAYLOAD_SECRET` | juhuslik 64 margiline string |
-   | `NEXT_PUBLIC_SERVER_URL` | `https://bornitbaltic.ee` |
-   | `MEDIA_DIR` | `/app/media` |
-   | `PAYLOAD_DB_PUSH` | `true` esimesel deployl, seejarel `false` |
-   | `INQUIRY_TO` | `marek@bornitbaltic.ee` |
-   | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | meiliteenuse andmed |
+**Skeem kaib migratsioonidega.** Payload teeb automaatse `push`i ainult
+arenduses, tootmises mitte. Kui kollektsioone muudad:
 
-4. Esimese deploy jarel loo admin ja jooksuta import.
+```bash
+# aja DATABASE_URI Railway Postgresi peale (avalik TCP proxy)
+DATABASE_URI=postgresql://... PAYLOAD_MIGRATING=true npx payload migrate:create --name mis-muutus
+git add src/migrations && git commit && git push
+```
 
-Ilma SMTP andmeteta paring salvestub Payloadi, aga meili valja ei lahe.
-Kirjad kaivad aadressile `INQUIRY_TO`.
+Teenuse `preDeployCommand` on `npm run payload migrate`, seega uus
+migratsioon jookseb automaatselt enne iga kaivitust.
+
+Keskkonnamuutujad (`web`):
+
+| Muutuja | Selgitus |
+| --- | --- |
+| `DATABASE_URI` | `postgresql://postgres:...@postgres.railway.internal:5432/railway` |
+| `PAYLOAD_SECRET` | krypteerimisvoti |
+| `NEXT_PUBLIC_SERVER_URL` | avalik aadress |
+| `MEDIA_DIR` | `/app/media` (ketta uhenduspunkt) |
+| `INQUIRY_TO` | `marek@bornitbaltic.ee` |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | esimese kasutaja loomiseks |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | meiliteenus |
+
+Ilma SMTP andmeteta paring salvestub Payloadi, aga kirja valja ei lahe.
+
+**Sisu uuesti importimine serveris**: pane `preDeployCommand` ajutiselt
+`npm run payload migrate && npm run import:bornit`, tee deploy, siis vota
+tagasi. Import tombab pildid ja PDFid vanalt lehelt ja on idempotentne.
+
+**Oma domeen**: lisa `web` teenusele custom domain bornitbaltic.ee ja
+suuna DNS Railway peale. Seejarel muuda `NEXT_PUBLIC_SERVER_URL`.
 
 ## Vormid
 
