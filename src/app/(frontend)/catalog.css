@@ -613,14 +613,20 @@
   .cat-layout {
     grid-template-columns: 1fr;
   }
-  .cat-rail {
-    position: static;
+  /* mobiilis on sisu tahtsam kui navigatsioon: riba laheb sisu alla */
+  .cat-main {
+    order: 1;
   }
-  .cat-rail__sub {
-    display: block;
+  .cat-rail {
+    order: 2;
+    position: static;
+    margin-top: 12px;
   }
   .prod-top {
     grid-template-columns: 1fr;
+  }
+  .prod-hero {
+    max-width: 380px;
   }
 }
 

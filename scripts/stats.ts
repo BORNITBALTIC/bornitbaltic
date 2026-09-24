@@ -43,8 +43,9 @@ const run = async () => {
   const noDocs = all.docs.filter((p) => !p.documents || p.documents.length === 0)
   const noImages = all.docs.filter((p) => !p.images || (p.images as unknown[]).length === 0)
   console.log('ilma dokumendita tooteid:', noDocs.length)
+  if (noDocs.length) console.log('   ', noDocs.map((p) => p.slug).join(', '))
   console.log('ilma pildita tooteid    :', noImages.length)
-  if (noDocs.length) console.log('  ', noDocs.map((p) => p.slug).join(', '))
+  if (noImages.length) console.log('   ', noImages.map((p) => p.slug).join(', '))
 
   const latest = await payload.find({
     collection: 'inquiries',

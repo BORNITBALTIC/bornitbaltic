@@ -7,7 +7,7 @@ const run = async () => {
   const payload = await getPayload({ config })
   const res = await payload.delete({
     collection: 'inquiries',
-    where: { email: { in: ['kontroll@example.com', 'avaleht@example.com'] } },
+    where: { email: { in: ['kontroll@example.com', 'avaleht@example.com', 'lopp@example.com'] } },
   })
   console.log('kustutatud:', res.docs.length)
   process.exit(0)
