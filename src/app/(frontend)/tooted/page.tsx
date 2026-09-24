@@ -11,7 +11,11 @@ export const metadata: Metadata = {
     'BORNIT, GRÜN ja SILIKAL tooted: hüdroisolatsioon, vuugitihendus, teedeehitus, katuse saneerimine ja markeerimine.',
 }
 
-export const revalidate = 300
+/**
+ * Renderdatakse paringu ajal. Railway privaatvork (Postgres) ei ole
+ * ehituse ajal kattesaadav, seega seda lehte ei tohi ette renderdada.
+ */
+export const dynamic = 'force-dynamic'
 
 export default async function ProductsIndexPage() {
   const tree = await getCategoryTree()
