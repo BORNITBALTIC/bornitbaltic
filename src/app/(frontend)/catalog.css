@@ -1,0 +1,653 @@
+/* ============================================================
+   Kataloogilehed: /tooted, /tootekategooria, tooteleht.
+   Kasutab templatei tokeneid (--pitch, --mark, --paper jne),
+   et uued lehed oleksid avalehega sama keeles.
+   ============================================================ */
+
+.cat-page,
+.prod-page {
+  padding-bottom: clamp(56px, 8vw, 120px);
+}
+
+/* ---------- pealkirjaplokk ---------- */
+.cat-head {
+  background: var(--pitch);
+  color: var(--paper);
+  padding: clamp(34px, 5vw, 62px) 0 clamp(30px, 4vw, 52px);
+  border-bottom: 3px solid var(--mark);
+}
+.cat-head h1 {
+  font-size: clamp(28px, 4vw, 52px);
+  max-width: 24ch;
+  margin-top: 14px;
+}
+.cat-head .lede {
+  color: rgba(237, 235, 230, 0.72);
+  margin-top: 16px;
+}
+.cat-count {
+  margin-top: 18px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dust);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  color: rgba(237, 235, 230, 0.6);
+}
+.crumbs a {
+  text-decoration: none;
+  color: rgba(237, 235, 230, 0.78);
+  transition: color 0.2s;
+}
+.crumbs a:hover {
+  color: #fff;
+}
+.crumbs span[aria-hidden] {
+  color: rgba(237, 235, 230, 0.34);
+}
+
+/* ---------- kahe veeru paigutus ---------- */
+.cat-layout {
+  display: grid;
+  grid-template-columns: 276px minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+  padding-top: clamp(30px, 4vw, 54px);
+}
+
+/* ---------- vasak TOOTEKATEGOORIAD riba ---------- */
+.cat-rail {
+  position: sticky;
+  top: 90px;
+  border: var(--rule);
+  background: #fff;
+}
+.cat-rail__title {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 800;
+  padding: 16px 18px;
+  background: var(--pitch);
+  color: var(--paper);
+}
+.cat-rail__list,
+.cat-rail__sub {
+  list-style: none;
+}
+.cat-rail__list > li {
+  border-bottom: var(--rule);
+}
+.cat-rail__list > li:last-child {
+  border-bottom: 0;
+}
+.cat-rail a {
+  display: block;
+  text-decoration: none;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tar);
+  position: relative;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    padding-left 0.25s;
+}
+.cat-rail__list > li > a {
+  font-family: var(--display);
+  font-weight: 700;
+}
+.cat-rail a:hover {
+  background: rgba(20, 17, 14, 0.04);
+  padding-left: 22px;
+}
+.cat-rail a.is-current {
+  color: var(--markdeep);
+  background: rgba(203, 61, 43, 0.08);
+  box-shadow: inset 3px 0 0 var(--mark);
+}
+.cat-rail__sub {
+  padding: 0 0 8px;
+  border-top: var(--rule);
+  background: rgba(20, 17, 14, 0.02);
+  display: none;
+}
+.cat-rail__list > li.is-open .cat-rail__sub {
+  display: block;
+}
+.cat-rail__sub a {
+  padding: 9px 18px 9px 30px;
+  font-size: 14px;
+  color: var(--gravel);
+}
+.cat-rail__sub a::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  width: 6px;
+  height: 1px;
+  background: var(--dust);
+}
+
+/* ---------- kategooriakaardid (/tooted) ---------- */
+.cat-cards {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.cat-card a {
+  display: flex;
+  gap: 16px;
+  padding: 24px 22px;
+  background: #fff;
+  border: var(--rule);
+  text-decoration: none;
+  height: 100%;
+  position: relative;
+  transition:
+    border-color 0.25s,
+    transform 0.25s;
+}
+.cat-card a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--mark);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cat-card a:hover {
+  border-color: var(--pitch);
+  transform: translateY(-2px);
+}
+.cat-card a:hover::after {
+  transform: scaleX(1);
+}
+.cat-card__icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+}
+.cat-card__icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--mark);
+  fill: none;
+}
+.cat-card__body {
+  display: block;
+}
+.cat-card__body strong {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
+  display: block;
+  letter-spacing: -0.01em;
+}
+.cat-card__body span {
+  display: block;
+  font-size: 14.5px;
+  color: var(--gravel);
+  margin-top: 7px;
+}
+.cat-card__subs {
+  font-size: 13px !important;
+  color: var(--dust) !important;
+  margin-top: 10px !important;
+}
+
+/* ---------- tootenimekiri ---------- */
+.prod-grid {
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  background: rgba(20, 17, 14, 0.16);
+  border: var(--rule);
+}
+.prod-card__link {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 40px;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 20px;
+  background: var(--paper);
+  text-decoration: none;
+  transition: background 0.25s;
+}
+.prod-card__link:hover {
+  background: #fff;
+}
+.prod-card__pic {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: var(--rule);
+  overflow: hidden;
+}
+.prod-card__pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+.prod-card__ph {
+  width: 28px;
+  height: 28px;
+  stroke: var(--dust);
+  fill: none;
+  stroke-width: 1.5;
+}
+.prod-card__name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.prod-card__lede {
+  font-size: 14.5px;
+  color: var(--gravel);
+  margin-top: 6px;
+  max-width: 70ch;
+}
+.prod-card__tags {
+  display: flex;
+  gap: 7px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.tag {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border: 1px solid rgba(20, 17, 14, 0.22);
+  color: var(--gravel);
+  border-radius: 2px;
+}
+.tag--warn {
+  border-color: rgba(203, 61, 43, 0.4);
+  color: var(--markdeep);
+}
+.prod-card__go svg {
+  stroke: var(--mark);
+  fill: none;
+  transition: transform 0.25s;
+}
+.prod-card__link:hover .prod-card__go svg {
+  transform: translateX(5px);
+}
+.cat-empty {
+  padding: 30px 0;
+  color: var(--gravel);
+}
+
+/* ---------- tooteleht ---------- */
+.prod-top {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(22px, 3.5vw, 46px);
+  align-items: start;
+}
+.prod-hero {
+  border: var(--rule);
+  background: #fff;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.prod-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 18px;
+}
+.prod-hero__ph svg {
+  width: 56px;
+  height: 56px;
+  stroke: var(--dust);
+  fill: none;
+}
+.prod-lede {
+  font-size: clamp(16px, 1.5vw, 18.5px);
+  color: var(--tar);
+}
+.prod-lede p {
+  margin-bottom: 12px;
+  max-width: 62ch;
+}
+.prod-lede strong {
+  font-weight: 600;
+}
+
+.doc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 6px;
+}
+.doc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 11px 15px;
+  border: 1px solid rgba(20, 17, 14, 0.22);
+  background: #fff;
+  border-radius: 2px;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    background 0.2s;
+}
+.doc-btn svg {
+  stroke: var(--gravel);
+  fill: none;
+}
+.doc-btn:hover {
+  border-color: var(--pitch);
+  transform: translateY(-2px);
+}
+.doc-btn--warn {
+  border-color: rgba(203, 61, 43, 0.42);
+  color: var(--markdeep);
+}
+.doc-btn--warn svg {
+  stroke: var(--mark);
+}
+.doc-btn--warn:hover {
+  border-color: var(--mark);
+  background: rgba(203, 61, 43, 0.06);
+}
+.doc-btn__ext {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--dust);
+}
+
+.prod-cta {
+  margin-top: 20px;
+}
+.prod-cta:hover {
+  background: var(--pitch);
+  color: #fff;
+}
+
+.prod-block {
+  margin-top: clamp(38px, 5vw, 64px);
+  padding-top: clamp(24px, 3vw, 38px);
+  border-top: var(--rule);
+}
+.prod-block > h2 {
+  font-size: clamp(20px, 2.2vw, 28px);
+  margin-bottom: 18px;
+}
+
+.prose {
+  max-width: 74ch;
+}
+.prose p {
+  margin-bottom: 14px;
+}
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin: 24px 0 10px;
+  font-size: 19px;
+}
+.prose ul,
+.prose ol {
+  margin: 0 0 16px 22px;
+}
+.prose li {
+  margin-bottom: 6px;
+}
+.prose a {
+  color: var(--markdeep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.spec {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--rule);
+  background: #fff;
+  max-width: 720px;
+}
+.spec th,
+.spec td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: var(--rule);
+  font-size: 15px;
+  vertical-align: top;
+}
+.spec tr:last-child th,
+.spec tr:last-child td {
+  border-bottom: 0;
+}
+.spec th {
+  width: 40%;
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--gravel);
+  background: rgba(20, 17, 14, 0.03);
+}
+
+.doc-list {
+  list-style: none;
+  border: var(--rule);
+  background: #fff;
+  max-width: 720px;
+}
+.doc-list li + li {
+  border-top: var(--rule);
+}
+.doc-list a {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.doc-list a:hover {
+  background: rgba(203, 61, 43, 0.05);
+}
+.doc-list svg {
+  stroke: var(--mark);
+  fill: none;
+}
+.doc-list em {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dust);
+}
+
+.prod-gallery {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 10px;
+}
+.prod-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: var(--rule);
+  background: #fff;
+  transition: transform 0.3s;
+}
+.prod-gallery a:hover img {
+  transform: scale(1.02);
+}
+
+.rel-list {
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  background: rgba(20, 17, 14, 0.16);
+  border: var(--rule);
+  max-width: 720px;
+}
+.rel-list a {
+  display: block;
+  padding: 13px 16px;
+  background: var(--paper);
+  text-decoration: none;
+  font-weight: 500;
+  transition:
+    background 0.2s,
+    padding-left 0.25s;
+}
+.rel-list a:hover {
+  background: #fff;
+  padding-left: 21px;
+  color: var(--markdeep);
+}
+
+/* ---------- paringuvorm tootelehel ---------- */
+.prod-ask {
+  background: var(--pitch);
+  color: var(--paper);
+  padding: clamp(26px, 4vw, 44px);
+}
+.prod-ask h2 {
+  font-size: clamp(22px, 2.4vw, 32px);
+}
+.prod-ask .eyebrow {
+  color: #fff;
+}
+.prod-ask .lede {
+  color: rgba(237, 235, 230, 0.72);
+}
+.prod-ask__form {
+  margin-top: 24px;
+  display: grid;
+  gap: 14px;
+  max-width: 640px;
+}
+.prod-ask__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.prod-ask__form label {
+  display: block;
+}
+.prod-ask__form label > span {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dust);
+  margin-bottom: 7px;
+}
+.prod-ask__trap {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0;
+}
+.prod-ask__error {
+  color: #ff9b8c;
+  font-size: 14.5px;
+}
+.prod-ask__form .btn-primary {
+  justify-self: start;
+  margin-top: 6px;
+}
+.prod-ask__form .btn-primary:hover {
+  background: #fff;
+  color: var(--pitch);
+}
+.prod-ask__form .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+.prod-ask__fine {
+  font-size: 14px;
+  color: rgba(237, 235, 230, 0.6);
+}
+.prod-ask__fine a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prod-ask--done {
+  display: block;
+}
+
+/* ---------- mobiil ---------- */
+@media (max-width: 1040px) {
+  .cat-layout {
+    grid-template-columns: 1fr;
+  }
+  .cat-rail {
+    position: static;
+  }
+  .cat-rail__sub {
+    display: block;
+  }
+  .prod-top {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .prod-card__link {
+    grid-template-columns: 66px minmax(0, 1fr);
+    gap: 14px;
+  }
+  .prod-card__pic {
+    width: 66px;
+    height: 66px;
+  }
+  .prod-card__go {
+    display: none;
+  }
+  .prod-ask__row {
+    grid-template-columns: 1fr;
+  }
+  .spec th {
+    width: 46%;
+  }
+}
+
+/* avalehe vormi veateade (site.js lisab selle) */
+.form-error {
+  grid-column: 1 / -1;
+  color: #ff9b8c;
+  font-size: 14.5px;
+  margin-top: 6px;
+}
