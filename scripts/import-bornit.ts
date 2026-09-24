@@ -12,6 +12,7 @@
 import 'dotenv/config'
 
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { JSDOM } from 'jsdom'
@@ -22,8 +23,18 @@ import { convertHTMLToLexical, editorConfigFactory } from '@payloadcms/richtext-
 import config from '../src/payload.config.js'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
-const DATA_DIR = path.resolve(dirname, '../../.tmp/bornit')
-const MEDIA_DIR = path.join(DATA_DIR, 'media')
+
+/**
+ * JSON tuleb repost (data/bornit), et import tootaks ka serveris.
+ * Kohalikus masinas eelistatakse varskelt kraabitud .tmp/bornit sisu.
+ */
+const REPO_DATA = path.resolve(dirname, '../data/bornit')
+const SCRAPE_DATA = path.resolve(dirname, '../../.tmp/bornit')
+const DATA_DIR =
+  process.env.BORNIT_DATA_DIR ||
+  (fs.existsSync(path.join(SCRAPE_DATA, 'products.json')) ? SCRAPE_DATA : REPO_DATA)
+const MEDIA_DIR = process.env.BORNIT_MEDIA_DIR || path.join(SCRAPE_DATA, 'media')
+const LIMIT = Number(process.env.BORNIT_LIMIT || 0)
 const LOCALE = 'et'
 
 type ScrapedDoc = { kind: string; label: string; url: string }
@@ -107,6 +118,26 @@ const localFileFor = (url: string): string | null => {
   return fs.existsSync(candidate) ? candidate : null
 }
 
+/**
+ * Serveris ei ole .tmp kausta, seega tommatakse fail vanalt lehelt.
+ * Tagastab ajutise faili tee voi null, kui allikas ei vasta.
+ */
+const downloadToTemp = async (url: string): Promise<string | null> => {
+  const base = decodeURIComponent(new URL(url).pathname.split('/').pop() || 'fail')
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': 'BornitMigration/1.0' } })
+    if (!res.ok) return null
+    const buf = Buffer.from(await res.arrayBuffer())
+    if (!buf.length) return null
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bornit-'))
+    const target = path.join(dir, base)
+    fs.writeFileSync(target, buf)
+    return target
+  } catch {
+    return null
+  }
+}
+
 const brandOf = (title: string, brands: string[]): 'bornit' | 'grun' | 'silikal' | 'muu' => {
   const hay = (title + ' ' + brands.join(' ')).toUpperCase()
   if (hay.includes('SILIKAL')) return 'silikal'
@@ -170,7 +201,9 @@ const run = async () => {
   }
 
   const categories = readJson<ScrapedCategory[]>('categories.json')
-  const products = readJson<ScrapedProduct[]>('products.json')
+  const allProducts = readJson<ScrapedProduct[]>('products.json')
+  const products = LIMIT > 0 ? allProducts.slice(0, LIMIT) : allProducts
+  console.log('Andmed: ' + DATA_DIR)
 
   /* ---------- 1. failid ---------- */
   const mediaByUrl = new Map<string, number | string>()
@@ -190,20 +223,29 @@ const run = async () => {
       return existing.docs[0].id
     }
 
-    const filePath = localFileFor(url)
+    let filePath = localFileFor(url)
+    let temporary = false
     if (!filePath) {
-      console.warn('  ! fail puudub kohapeal: ' + url)
+      filePath = await downloadToTemp(url)
+      temporary = Boolean(filePath)
+    }
+    if (!filePath) {
+      console.warn('  ! faili ei saanud katte: ' + url)
       return null
     }
 
-    const createdDoc = await payload.create({
-      collection: 'media',
-      locale: LOCALE,
-      data: { alt: alt || '', legacyUrl: url },
-      filePath,
-    })
-    mediaByUrl.set(url, createdDoc.id)
-    return createdDoc.id
+    try {
+      const createdDoc = await payload.create({
+        collection: 'media',
+        locale: LOCALE,
+        data: { alt: alt || '', legacyUrl: url },
+        filePath,
+      })
+      mediaByUrl.set(url, createdDoc.id)
+      return createdDoc.id
+    } finally {
+      if (temporary) fs.rmSync(path.dirname(filePath), { recursive: true, force: true })
+    }
   }
 
   /* ---------- 2. kategooriad ---------- */

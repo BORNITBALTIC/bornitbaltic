@@ -1,0 +1,482 @@
+[
+  {
+    "wc_id": 77,
+    "slug": "bituumenist-erimastiksid",
+    "name": "Bituumenist erimastiksid",
+    "path": [
+      "eritooted",
+      "bituumenist-erimastiksid"
+    ],
+    "parent_slug": "eritooted",
+    "count": 4,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/eritooted/bituumenist-erimastiksid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 71,
+    "slug": "bituumenrullmaterjalid",
+    "name": "Bituumenrullmaterjalid",
+    "path": [
+      "katuse-saneerimistooted",
+      "bituumenrullmaterjalid"
+    ],
+    "parent_slug": "katuse-saneerimistooted",
+    "count": 1,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/katuse-saneerimistooted/bituumenrullmaterjalid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 60,
+    "slug": "bituumenrullmaterjalid-ja-lindid",
+    "name": "Bituumenrullmaterjalid ja lindid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "bituumenrullmaterjalid-ja-lindid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 1,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/bituumenrullmaterjalid-ja-lindid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 54,
+    "slug": "bornit-tooriistad",
+    "name": "BORNIT tööriistad",
+    "path": [
+      "bornit-tooriistad"
+    ],
+    "parent_slug": null,
+    "count": 16,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/bornit-tooriistad/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/BORNIT-ja-Gryn-tooriistad.png"
+  },
+  {
+    "wc_id": 67,
+    "slug": "emulsioonid",
+    "name": "Emulsioonid",
+    "path": [
+      "teedeehituses-kasutatavad-tooted",
+      "emulsioonid"
+    ],
+    "parent_slug": "teedeehituses-kasutatavad-tooted",
+    "count": 5,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/emulsioonid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 53,
+    "slug": "eritooted",
+    "name": "Eritooted",
+    "path": [
+      "eritooted"
+    ],
+    "parent_slug": null,
+    "count": 7,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/eritooted/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/Eritooted.png"
+  },
+  {
+    "wc_id": 134,
+    "slug": "grun-tooriistad",
+    "name": "GRÜN tööriistad",
+    "path": [
+      "grun-tooriistad"
+    ],
+    "parent_slug": null,
+    "count": 16,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/grun-tooriistad/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/BORNIT-ja-Gryn-tooriistad.png"
+  },
+  {
+    "wc_id": 61,
+    "slug": "hudroisolatsiooni-abivahendid",
+    "name": "Hüdroisolatsiooni abivahendid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "hudroisolatsiooni-abivahendid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 5,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/hudroisolatsiooni-abivahendid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 58,
+    "slug": "hudroisoleerivad-mineraalsed-lobrid",
+    "name": "Hüdroisoleerivad mineraalsed lobrid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "hudroisoleerivad-mineraalsed-lobrid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 8,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/hudroisoleerivad-mineraalsed-lobrid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 59,
+    "slug": "immutus-ja-injekteerimisvahendid",
+    "name": "Immutus- ja injekteerimisvahendid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "immutus-ja-injekteerimisvahendid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 12,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/immutus-ja-injekteerimisvahendid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 141,
+    "slug": "joonte-markeerimisvarv",
+    "name": "Joonte markeerimisvärv",
+    "path": [
+      "markeerimisvarvid",
+      "joonte-markeerimisvarv"
+    ],
+    "parent_slug": "markeerimisvarvid",
+    "count": 1,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/markeerimisvarvid/joonte-markeerimisvarv/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 50,
+    "slug": "katuse-saneerimistooted",
+    "name": "Katuse saneerimistooted",
+    "path": [
+      "katuse-saneerimistooted"
+    ],
+    "parent_slug": null,
+    "count": 17,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/katuse-saneerimistooted/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/Katuse-saneerimistooted.png"
+  },
+  {
+    "wc_id": 55,
+    "slug": "krundid",
+    "name": "Krundid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "krundid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 7,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/krundid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 66,
+    "slug": "kulmad-asfaltsegud",
+    "name": "Külmad asfaltsegud",
+    "path": [
+      "teedeehituses-kasutatavad-tooted",
+      "kulmad-asfaltsegud"
+    ],
+    "parent_slug": "teedeehituses-kasutatavad-tooted",
+    "count": 4,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/kulmad-asfaltsegud/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 74,
+    "slug": "kulmalt-valatavad-massid",
+    "name": "Külmalt valatavad massid",
+    "path": [
+      "vuugitihendustooted",
+      "kulmalt-valatavad-massid"
+    ],
+    "parent_slug": "vuugitihendustooted",
+    "count": 4,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vuugitihendustooted/kulmalt-valatavad-massid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 75,
+    "slug": "kuumalt-valatavad-massid",
+    "name": "Kuumalt valatavad massid",
+    "path": [
+      "vuugitihendustooted",
+      "kuumalt-valatavad-massid"
+    ],
+    "parent_slug": "vuugitihendustooted",
+    "count": 7,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vuugitihendustooted/kuumalt-valatavad-massid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 70,
+    "slug": "liimid",
+    "name": "Liimid",
+    "path": [
+      "katuse-saneerimistooted",
+      "liimid"
+    ],
+    "parent_slug": "katuse-saneerimistooted",
+    "count": 6,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/katuse-saneerimistooted/liimid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 139,
+    "slug": "markeerimisvarvid",
+    "name": "Markeerimisvärvid",
+    "path": [
+      "markeerimisvarvid"
+    ],
+    "parent_slug": null,
+    "count": 5,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/markeerimisvarvid/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/Soppec.jpg"
+  },
+  {
+    "wc_id": 69,
+    "slug": "pahtlid",
+    "name": "Pahtlid",
+    "path": [
+      "katuse-saneerimistooted",
+      "pahtlid"
+    ],
+    "parent_slug": "katuse-saneerimistooted",
+    "count": 2,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/katuse-saneerimistooted/pahtlid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 57,
+    "slug": "paksukihilised-bituumenmastiksid",
+    "name": "Paksukihilised bituumenmastiksid",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "paksukihilised-bituumenmastiksid"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 7,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/paksukihilised-bituumenmastiksid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 142,
+    "slug": "palkide-markeerimisvarv",
+    "name": "Palkide markeerimisvärv",
+    "path": [
+      "markeerimisvarvid",
+      "palkide-markeerimisvarv"
+    ],
+    "parent_slug": "markeerimisvarvid",
+    "count": 1,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/markeerimisvarvid/palkide-markeerimisvarv/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 65,
+    "slug": "parandusmaterjalid",
+    "name": "Parandusmaterjalid",
+    "path": [
+      "teedeehituses-kasutatavad-tooted",
+      "parandusmaterjalid"
+    ],
+    "parent_slug": "teedeehituses-kasutatavad-tooted",
+    "count": 6,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/parandusmaterjalid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 76,
+    "slug": "puhastusvahendid",
+    "name": "Puhastusvahendid",
+    "path": [
+      "eritooted",
+      "puhastusvahendid"
+    ],
+    "parent_slug": "eritooted",
+    "count": 3,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/eritooted/puhastusvahendid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 135,
+    "slug": "silikal-tooted",
+    "name": "SILIKAL tooted",
+    "path": [
+      "silikal-tooted"
+    ],
+    "parent_slug": null,
+    "count": 8,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/silikal-tooted/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/images.jpg"
+  },
+  {
+    "wc_id": 51,
+    "slug": "teedeehituses-kasutatavad-tooted",
+    "name": "Teedeehituses kasutatavad tooted",
+    "path": [
+      "teedeehituses-kasutatavad-tooted"
+    ],
+    "parent_slug": null,
+    "count": 35,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/Teedeehitustooted.png"
+  },
+  {
+    "wc_id": 155,
+    "slug": "teekattemargistus",
+    "name": "Teekattemärgistus",
+    "path": [
+      "teekattemargistus"
+    ],
+    "parent_slug": null,
+    "count": 1,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teekattemargistus/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 72,
+    "slug": "tihendusained",
+    "name": "Tihendusained",
+    "path": [
+      "vuugitihendustooted",
+      "tihendusained"
+    ],
+    "parent_slug": "vuugitihendustooted",
+    "count": 7,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vuugitihendustooted/tihendusained/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 73,
+    "slug": "tihenduslindid",
+    "name": "Tihenduslindid",
+    "path": [
+      "vuugitihendustooted",
+      "tihenduslindid"
+    ],
+    "parent_slug": "vuugitihendustooted",
+    "count": 3,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vuugitihendustooted/tihenduslindid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 140,
+    "slug": "too-aluspindade-markeerimisvarvid",
+    "name": "Töö/aluspindade markeerimisvärvid",
+    "path": [
+      "markeerimisvarvid",
+      "too-aluspindade-markeerimisvarvid"
+    ],
+    "parent_slug": "markeerimisvarvid",
+    "count": 3,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/markeerimisvarvid/too-aluspindade-markeerimisvarvid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 56,
+    "slug": "voobad",
+    "name": "Võõbad",
+    "path": [
+      "vundamendi-hudroisolatsioon",
+      "voobad"
+    ],
+    "parent_slug": "vundamendi-hudroisolatsioon",
+    "count": 3,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/voobad/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 68,
+    "slug": "voobad-ja-krundid",
+    "name": "Võõbad ja krundid",
+    "path": [
+      "katuse-saneerimistooted",
+      "voobad-ja-krundid"
+    ],
+    "parent_slug": "katuse-saneerimistooted",
+    "count": 9,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/katuse-saneerimistooted/voobad-ja-krundid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 49,
+    "slug": "vundamendi-hudroisolatsioon",
+    "name": "Vundamendi hüdroisolatsioon",
+    "path": [
+      "vundamendi-hudroisolatsioon"
+    ],
+    "parent_slug": null,
+    "count": 42,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vundamendi-hudroisolatsioon/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/vundamendi_hydroisolatsioon.png"
+  },
+  {
+    "wc_id": 63,
+    "slug": "vuugid-praod",
+    "name": "Vuugid / praod",
+    "path": [
+      "teedeehituses-kasutatavad-tooted",
+      "vuugid-praod"
+    ],
+    "parent_slug": "teedeehituses-kasutatavad-tooted",
+    "count": 16,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/vuugid-praod/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 64,
+    "slug": "vuugiliimid-vuugilindid",
+    "name": "Vuugiliimid / vuugilindid",
+    "path": [
+      "teedeehituses-kasutatavad-tooted",
+      "vuugiliimid-vuugilindid"
+    ],
+    "parent_slug": "teedeehituses-kasutatavad-tooted",
+    "count": 6,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/teedeehituses-kasutatavad-tooted/vuugiliimid-vuugilindid/",
+    "description": "",
+    "image": ""
+  },
+  {
+    "wc_id": 52,
+    "slug": "vuugitihendustooted",
+    "name": "Vuugitihendustooted",
+    "path": [
+      "vuugitihendustooted"
+    ],
+    "parent_slug": null,
+    "count": 19,
+    "permalink": "https://bornitbaltic.ee/tootekategooria/vuugitihendustooted/",
+    "description": "",
+    "image": "https://bornitbaltic.ee/wp-content/uploads/2016/12/Vuugitihendustooted.png"
+  }
+]

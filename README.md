@@ -55,16 +55,35 @@ ADMIN_EMAIL=marek@bornitbaltic.ee ADMIN_PASSWORD=... npm run seed:admin
 
 ## Sisu import vanalt lehelt
 
-Andmed loetakse valja vana WooCommerce lehe avalikust Store APIst.
+Toodete ja kategooriate andmed on repos: `data/bornit/products.json` ja
+`categories.json`. Need on valja loetud vana lehe avalikust WooCommerce
+Store APIst.
+
+Import serveris (pildid ja PDFid tommatakse vanalt lehelt):
 
 ```bash
-python tools/bornit_scrape.py --media    # WATi juurkaustas: .tmp/bornit/ alla
-npm run import:bornit                    # Payloadi
-npm run stats                            # kontroll
+npm run import:bornit
+npm run stats
 ```
 
-Import on idempotentne: kordusjooks uuendab olemasolevaid kirjeid
-(`wcId` toodetel ja kategooriatel, `legacyUrl` failidel).
+Andmete uuesti valjalugemine (WATi juurkaustas, kui vana leht on muutunud):
+
+```bash
+python tools/bornit_scrape.py --media    # .tmp/bornit/ alla
+cp .tmp/bornit/{products,categories}.json bornitbaltic/data/bornit/
+```
+
+Kui `.tmp/bornit/media` on olemas, voetakse failid sealt, muidu laetakse
+igauks vanalt lehelt alla. Import on idempotentne: kordusjooks uuendab
+olemasolevaid kirjeid (`wcId` toodetel ja kategooriatel, `legacyUrl`
+failidel), nii et seda voib ohutult korrata.
+
+Kontrolltooriistad:
+
+```bash
+python tools/bornit_check.py    # brauseris: ekraanipildid, konsool, vorm
+python tools/bornit_urls.py     # koik 178 vana URLi peavad andma 200
+```
 
 ## Railway
 
