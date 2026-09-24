@@ -34,6 +34,8 @@ const DATA_DIR =
   process.env.BORNIT_DATA_DIR ||
   (fs.existsSync(path.join(SCRAPE_DATA, 'products.json')) ? SCRAPE_DATA : REPO_DATA)
 const MEDIA_DIR = process.env.BORNIT_MEDIA_DIR || path.join(SCRAPE_DATA, 'media')
+/** Kuhu Payload failid salvestab (sama mis Media kollektsiooni staticDir). */
+const UPLOAD_DIR = process.env.MEDIA_DIR || path.resolve(process.cwd(), 'media')
 const LIMIT = Number(process.env.BORNIT_LIMIT || 0)
 const LOCALE = 'et'
 
@@ -218,9 +220,16 @@ const run = async () => {
       limit: 1,
       pagination: false,
     })
-    if (existing.docs[0]) {
-      mediaByUrl.set(url, existing.docs[0].id)
-      return existing.docs[0].id
+    const found = existing.docs[0]
+    if (found) {
+      // kirje voib olla alles, aga fail kettalt kadunud (nt ketas vahetus)
+      const onDisk = found.filename && fs.existsSync(path.join(UPLOAD_DIR, found.filename))
+      if (onDisk) {
+        mediaByUrl.set(url, found.id)
+        return found.id
+      }
+      console.log('  ~ fail puudub kettalt, laen uuesti: ' + found.filename)
+      await payload.delete({ collection: 'media', id: found.id })
     }
 
     let filePath = localFileFor(url)
