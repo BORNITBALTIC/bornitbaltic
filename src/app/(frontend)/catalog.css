@@ -856,12 +856,21 @@
 }
 
 /* ============================================================
-   Hero kompaktsemaks: nupud ja numbrid peavad esimesel ekraanil nahtavad olema.
+   Hero: tekst vasakul, pilt paremal, koik mahub arvutis esimesele ekraanile.
    ============================================================ */
-.hero { padding-top: clamp(32px, 4vw, 52px); }
-.hero h1 { font-size: clamp(32px, 4.6vw, 60px); line-height: 0.98; }
-.hero p { margin-top: 16px; font-size: clamp(15px, 1.3vw, 17px); max-width: 56ch; }
-.hero-actions { margin-top: 22px; }
-.hero-meta { margin-top: 26px; padding-top: 18px; gap: 0 36px; }
-.hero-meta b { font-size: 24px; }
-.hero-art { margin-top: clamp(20px, 3vw, 32px); }
+.hero { padding: clamp(28px, 3.5vw, 44px) 0 clamp(28px, 3.5vw, 44px); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.hero h1 { font-size: clamp(28px, 3.3vw, 46px); line-height: 1.02; max-width: 18ch; }
+.hero p { margin-top: 14px; font-size: clamp(14.5px, 1.15vw, 16.5px); max-width: 52ch; }
+.hero-actions { margin-top: 20px; }
+.hero-actions .btn { padding: 12px 20px; font-size: 15px; }
+.hero-meta { margin-top: 22px; padding-top: 14px; gap: 0 28px; }
+.hero-meta div { padding: 4px 0; }
+.hero-meta b { font-size: 20px; }
+.hero-meta small { font-size: 12.5px; }
+.hero-art { margin-top: 0; }
+.hero-art img { aspect-ratio: 4 / 3; max-height: 460px; width: 100%; height: auto; object-fit: cover; object-position: 60% 55%; border-radius: 3px; }
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art img { aspect-ratio: 16 / 9; max-height: 220px; }
+}
