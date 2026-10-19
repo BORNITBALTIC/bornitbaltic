@@ -1,5 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { dict, DEFAULT_LOCALE, isLocale, type Locale } from './i18n'
 
 export type InquiryInput = {
   name: string
@@ -12,6 +13,7 @@ export type InquiryInput = {
   productTitle?: string
   sourceUrl?: string
   honeypot?: string
+  locale?: string
 }
 
 export type InquiryResult = { ok: boolean; message: string }
@@ -26,18 +28,22 @@ const clean = (v: unknown): string => String(v ?? '').trim()
  * meili aadressile INQUIRY_TO.
  */
 export const createInquiry = async (input: InquiryInput): Promise<InquiryResult> => {
+  // vastused tulevad samas keeles, mille kasutaja lehel valis
+  const locale: Locale = isLocale(input.locale) ? input.locale : DEFAULT_LOCALE
+  const d = dict(locale)
+
   // nahtamatu vali peab jaama tuhjaks: robot taidab selle ara
   if (clean(input.honeypot)) {
-    return { ok: true, message: 'Aitah, paring on saadetud.' }
+    return { ok: true, message: d.ok }
   }
 
   const name = clean(input.name)
   const email = clean(input.email)
   const message = clean(input.message)
 
-  if (name.length < 2) return { ok: false, message: 'Palun sisesta oma nimi.' }
-  if (!EMAIL_RE.test(email)) return { ok: false, message: 'Palun kontrolli e-posti aadressi.' }
-  if (message.length < 5) return { ok: false, message: 'Palun kirjuta, mida vajad.' }
+  if (name.length < 2) return { ok: false, message: d.errName }
+  if (!EMAIL_RE.test(email)) return { ok: false, message: d.errEmail }
+  if (message.length < 5) return { ok: false, message: d.errMessage }
 
   const rawId = clean(input.productId)
   const productId = rawId && !Number.isNaN(Number(rawId)) ? Number(rawId) : null
@@ -62,8 +68,8 @@ export const createInquiry = async (input: InquiryInput): Promise<InquiryResult>
     })
   } catch (err) {
     payload.logger.error({ err, msg: 'Paringu salvestamine ebaonnestus' })
-    return { ok: false, message: 'Midagi laks katki. Palun helista voi kirjuta meilile.' }
+    return { ok: false, message: d.errGeneric }
   }
 
-  return { ok: true, message: 'Aitah, paring on saadetud. Votame uhendust esimesel voimalusel.' }
+  return { ok: true, message: d.ok }
 }

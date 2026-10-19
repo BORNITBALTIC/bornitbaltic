@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 
 import CategorySidebar from '@/components/CategorySidebar'
 import { categoryHref, getCategoryTree } from '@/lib/catalog'
+import { dict, getLocale } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Tooted | Bornit Baltic',
@@ -12,33 +13,32 @@ export const metadata: Metadata = {
 }
 
 /**
- * Renderdatakse paringu ajal. Railway privaatvork (Postgres) ei ole
- * ehituse ajal kattesaadav, seega seda lehte ei tohi ette renderdada.
+ * Renderdatakse paringu ajal: leht loeb keelevaliku kupsisest ja
+ * Railway privaatvork (Postgres) ei ole ehituse ajal kattesaadav.
  */
 export const dynamic = 'force-dynamic'
 
 export default async function ProductsIndexPage() {
-  const tree = await getCategoryTree()
+  const locale = await getLocale()
+  const d = dict(locale)
+  const tree = await getCategoryTree(locale)
 
   return (
     <main className="cat-page">
       <div className="cat-head">
         <div className="wrap">
-          <nav className="crumbs" aria-label="Asukoht">
-            <Link href="/">Avaleht</Link>
+          <nav className="crumbs" aria-label={d.breadcrumb}>
+            <Link href="/">{d.home}</Link>
             <span aria-hidden="true">/</span>
-            <span>Tooted</span>
+            <span>{d.products}</span>
           </nav>
-          <h1>Tooted</h1>
-          <p className="lede">
-            Kogu BORNIT&reg;, GR&Uuml;N ja SILIKAL valik. Vali kategooria, iga toote juures on
-            tehniline info, ohutuskaart ja hinnap&auml;ringu vorm.
-          </p>
+          <h1>{d.products}</h1>
+          <p className="lede">{d.productsLede}</p>
         </div>
       </div>
 
       <div className="wrap cat-layout">
-        <CategorySidebar tree={tree} />
+        <CategorySidebar tree={tree} locale={locale} />
 
         <div className="cat-main">
           <ul className="cat-cards">

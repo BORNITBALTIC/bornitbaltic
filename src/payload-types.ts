@@ -194,13 +194,17 @@ export interface Product {
       }[]
     | null;
   /**
-   * Tehniline info ja ohutuskaart kuvatakse tootelehel eraldi nuppudena.
+   * Tehniline info ja ohutuskaart kuvatakse tootelehel eraldi nuppudena. Sama dokumendi teiskeelsed versioonid lisa eraldi ridadena, sama tuubi ja sama nupu tekstiga.
    */
   documents?:
     | {
         kind: 'tehniline_info' | 'ohutuskaart' | 'infoleht' | 'toimivusdeklaratsioon' | 'kasutusjuhend' | 'muu';
         /**
-         * Tuhjaks jattes kasutatakse tuubi nime.
+         * Lehel valitakse sama tuupi ja sama nimega failidest kasutaja keelele koige lahedasem: tapne keel, siis inglise, siis eesti.
+         */
+        language: 'et' | 'en' | 'fi' | 'lv' | 'lt' | 'de' | 'muu';
+        /**
+         * Tuhjaks jattes kasutatakse tuubi nime. Sama faili eri keelte versioonidel hoia sama tekst, siis kaivad nad kokku.
          */
         label?: string | null;
         file: number | Media;
@@ -478,6 +482,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         kind?: T;
+        language?: T;
         label?: T;
         file?: T;
         id?: T;

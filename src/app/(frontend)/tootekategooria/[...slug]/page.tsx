@@ -12,6 +12,7 @@ import {
   getCategoryWithDescendants,
   getProductsByCategories,
 } from '@/lib/catalog'
+import { dict, getLocale } from '@/lib/i18n'
 
 type Params = { slug: string[] }
 
@@ -32,18 +33,21 @@ export async function generateMetadata({
   }
 }
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export default async function CategoryPage({ params }: { params: Promise<Params> }) {
+  const locale = await getLocale()
+  const d = dict(locale)
+
   const { slug } = await params
-  const category = await getCategoryBySlug(leafSlug(slug))
+  const category = await getCategoryBySlug(leafSlug(slug), locale)
   if (!category) notFound()
 
   const [tree, ids] = await Promise.all([
-    getCategoryTree(),
+    getCategoryTree(locale),
     getCategoryWithDescendants(category),
   ])
-  const products = await getProductsByCategories(ids)
+  const products = await getProductsByCategories(ids, locale)
 
   const parent = category.parent && typeof category.parent === 'object' ? category.parent : null
 
@@ -51,10 +55,10 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
     <main className="cat-page">
       <div className="cat-head">
         <div className="wrap">
-          <nav className="crumbs" aria-label="Asukoht">
-            <Link href="/">Avaleht</Link>
+          <nav className="crumbs" aria-label={d.breadcrumb}>
+            <Link href="/">{d.home}</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/tooted">Tooted</Link>
+            <Link href="/tooted">{d.products}</Link>
             {parent && (
               <>
                 <span aria-hidden="true">/</span>
@@ -66,16 +70,14 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           </nav>
           <h1>{category.name}</h1>
           {category.description ? <p className="lede">{category.description}</p> : null}
-          <p className="cat-count">
-            {products.length} {products.length === 1 ? 'toode' : 'toodet'}
-          </p>
+          <p className="cat-count">{d.productCount(products.length)}</p>
         </div>
       </div>
 
       <div className="wrap cat-layout">
-        <CategorySidebar tree={tree} activeSlug={category.slug} />
+        <CategorySidebar tree={tree} activeSlug={category.slug} locale={locale} />
         <div className="cat-main">
-          <ProductGrid products={products} />
+          <ProductGrid products={products} locale={locale} />
         </div>
       </div>
     </main>

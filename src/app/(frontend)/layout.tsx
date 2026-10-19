@@ -25,7 +25,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <div dangerouslySetInnerHTML={{ __html: iconDefs }} />
-        <div dangerouslySetInnerHTML={{ __html: headerHtml }} />
+        {/* display: contents, muidu on sticky paise konteiner paise enda korgune ja ei kleepu */}
+        <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html: headerHtml }} />
         {children}
         <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
         <Script src="/site.js" strategy="afterInteractive" />

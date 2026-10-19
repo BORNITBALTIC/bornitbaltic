@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 import { categoryHref, subCategoryHref, type CategoryNode } from '@/lib/catalog'
+import { dict, DEFAULT_LOCALE, type Locale } from '@/lib/i18n'
 
 /**
  * Vasakpoolne TOOTEKATEGOORIAD riba, nagu vanal lehel.
@@ -10,16 +11,19 @@ import { categoryHref, subCategoryHref, type CategoryNode } from '@/lib/catalog'
 export default function CategorySidebar({
   tree,
   activeSlug,
+  locale = DEFAULT_LOCALE,
 }: {
   tree: CategoryNode[]
   activeSlug?: string
+  locale?: Locale
 }) {
+  const d = dict(locale)
   const isActiveBranch = (node: CategoryNode) =>
     node.slug === activeSlug || node.children.some((c) => c.slug === activeSlug)
 
   return (
-    <aside className="cat-rail" aria-label="Tootekategooriad">
-      <h2 className="cat-rail__title">Tootekategooriad</h2>
+    <aside className="cat-rail" aria-label={d.categories}>
+      <h2 className="cat-rail__title">{d.categories}</h2>
       <nav>
         <ul className="cat-rail__list">
           {tree.map((node) => {

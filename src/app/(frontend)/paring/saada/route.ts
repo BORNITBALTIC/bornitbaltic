@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     message: String(body.message ?? ''),
     productTitle: String(body.productTitle ?? 'Avalehe hinnaparing'),
     sourceUrl: String(body.sourceUrl ?? '/'),
+    locale: String(body.locale ?? ''),
   })
 
   return NextResponse.json(result, { status: result.ok ? 200 : 400 })

@@ -82,6 +82,24 @@ type CategoryData = RequiredDataFromCollectionSlug<'categories'>
 type ProductData = RequiredDataFromCollectionSlug<'products'>
 type DocEntry = NonNullable<ProductData['documents']>[number]
 type DocKind = DocEntry['kind']
+type DocLanguage = DocEntry['language']
+
+/**
+ * Dokumendi keel failinime jargi. Vana leht kasutas jarjekindlaid loppe:
+ *   _et_EE, _et_DE, _est, est.pdf, -ee_, e_kuj  -> eesti
+ *   _en_, englisch, english                     -> inglise
+ *   deutsch, _de_                               -> saksa
+ * Eesti margid vaadatakse esimesena, sest nt Sdb_..._et_DE.pdf on
+ * eestikeelne tekst saksa originaali pohjal.
+ */
+const detectDocLanguage = (url: string): DocLanguage => {
+  const name = decodeURIComponent(url.split('/').pop() || '').toLowerCase()
+  if (/_et_|_est|est\.pdf|-ee_|-es\.pdf|ee_bornit/.test(name)) return 'et'
+  if (/_en_|englisch|english/.test(name)) return 'en'
+  if (/deutsch|_de_/.test(name)) return 'de'
+  if (/e_kuj|ekuj/.test(name)) return 'et'
+  return 'muu'
+}
 
 const ICON_BY_SLUG: Record<string, NonNullable<CategoryData['icon']>> = {
   'vundamendi-hudroisolatsioon': 'i-hydro',
@@ -336,6 +354,7 @@ const run = async () => {
       if (!id) continue
       documents.push({
         kind: (DOC_KINDS.has(d.kind) ? d.kind : 'muu') as DocKind,
+        language: detectDocLanguage(d.url),
         label: d.label || undefined,
         file: id as DocEntry['file'],
       })

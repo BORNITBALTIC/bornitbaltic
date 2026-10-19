@@ -117,7 +117,9 @@ export const Products: CollectionConfig = {
               label: 'Dokumendid',
               labels: { singular: 'Dokument', plural: 'Dokumendid' },
               admin: {
-                description: 'Tehniline info ja ohutuskaart kuvatakse tootelehel eraldi nuppudena.',
+                description:
+                  'Tehniline info ja ohutuskaart kuvatakse tootelehel eraldi nuppudena. '
+                  + 'Sama dokumendi teiskeelsed versioonid lisa eraldi ridadena, sama tuubi ja sama nupu tekstiga.',
               },
               fields: [
                 {
@@ -136,11 +138,34 @@ export const Products: CollectionConfig = {
                   ],
                 },
                 {
+                  name: 'language',
+                  type: 'select',
+                  label: 'Faili keel',
+                  required: true,
+                  defaultValue: 'et',
+                  options: [
+                    { label: 'Eesti', value: 'et' },
+                    { label: 'English', value: 'en' },
+                    { label: 'Suomi', value: 'fi' },
+                    { label: 'Latviesu', value: 'lv' },
+                    { label: 'Lietuviu', value: 'lt' },
+                    { label: 'Deutsch', value: 'de' },
+                    { label: 'Maaramata', value: 'muu' },
+                  ],
+                  admin: {
+                    description:
+                      'Lehel valitakse sama tuupi ja sama nimega failidest kasutaja keelele koige lahedasem: tapne keel, siis inglise, siis eesti.',
+                  },
+                },
+                {
                   name: 'label',
                   type: 'text',
                   label: 'Nupu tekst',
                   localized: true,
-                  admin: { description: 'Tuhjaks jattes kasutatakse tuubi nime.' },
+                  admin: {
+                    description:
+                      'Tuhjaks jattes kasutatakse tuubi nime. Sama faili eri keelte versioonidel hoia sama tekst, siis kaivad nad kokku.',
+                  },
                 },
                 {
                   name: 'file',

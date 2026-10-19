@@ -8,13 +8,14 @@ import CategorySidebar from '@/components/CategorySidebar'
 import InquiryForm from '@/components/InquiryForm'
 import {
   categoryHref,
-  DOC_LABELS,
   getCategoryBySlug,
   getCategoryTree,
   getProductBySlug,
   getProductsByCategories,
+  pickDocuments,
   productHref,
 } from '@/lib/catalog'
+import { dict, formStrings, getLocale } from '@/lib/i18n'
 import type { Media, Product } from '@/payload-types'
 
 type Params = { slug: string[] }
@@ -35,19 +36,22 @@ export async function generateMetadata({
   }
 }
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 const fileOf = (value: unknown): Media | null =>
   value && typeof value === 'object' ? (value as Media) : null
 
 export default async function ProductPage({ params }: { params: Promise<Params> }) {
+  const locale = await getLocale()
+  const d = dict(locale)
+
   const { slug } = await params
   const last = leafSlug(slug)
-  const product = await getProductBySlug(last)
+  const product = await getProductBySlug(last, locale)
 
   if (!product) {
     // /tooted/<kategooria> laheb kategooria lehele, muidu 404
-    const asCategory = await getCategoryBySlug(last)
+    const asCategory = await getCategoryBySlug(last, locale)
     if (asCategory) redirect(categoryHref(asCategory))
     notFound()
   }
@@ -55,9 +59,11 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const category = typeof product.category === 'object' ? product.category : null
   const parent = category?.parent && typeof category.parent === 'object' ? category.parent : null
 
-  const tree = await getCategoryTree()
+  const tree = await getCategoryTree(locale)
   const siblings = category
-    ? (await getProductsByCategories([category.id])).filter((p) => p.id !== product.id).slice(0, 4)
+    ? (await getProductsByCategories([category.id], locale))
+        .filter((p) => p.id !== product.id)
+        .slice(0, 4)
     : []
 
   const images = (Array.isArray(product.images) ? product.images : [])
@@ -66,21 +72,25 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const hero = images[0]
   const gallery = images.slice(1)
 
-  const docs = (Array.isArray(product.documents) ? product.documents : []).filter((d) =>
-    Boolean(fileOf(d.file)?.url),
+  // igast dokumendist valitakse kasutaja keelele koige lahedasem fail
+  const docs = pickDocuments(product.documents, locale).filter((doc) =>
+    Boolean(fileOf(doc.file)?.url),
   )
-  const primaryDocs = docs.filter((d) => d.kind === 'tehniline_info' || d.kind === 'ohutuskaart')
-  const otherDocs = docs.filter((d) => d.kind !== 'tehniline_info' && d.kind !== 'ohutuskaart')
+  const primaryDocs = docs.filter(
+    (doc) => doc.kind === 'tehniline_info' || doc.kind === 'ohutuskaart',
+  )
   const measures = Array.isArray(product.measures) ? product.measures : []
+
+  const docLabel = (doc: (typeof docs)[number]) => doc.label || d.docKinds[doc.kind] || d.docKinds.muu
 
   return (
     <main className="prod-page">
       <div className="cat-head">
         <div className="wrap">
-          <nav className="crumbs" aria-label="Asukoht">
-            <Link href="/">Avaleht</Link>
+          <nav className="crumbs" aria-label={d.breadcrumb}>
+            <Link href="/">{d.home}</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/tooted">Tooted</Link>
+            <Link href="/tooted">{d.products}</Link>
             {parent && (
               <>
                 <span aria-hidden="true">/</span>
@@ -99,7 +109,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       </div>
 
       <div className="wrap cat-layout">
-        <CategorySidebar tree={tree} activeSlug={category?.slug} />
+        <CategorySidebar tree={tree} activeSlug={category?.slug} locale={locale} />
 
         <div className="cat-main prod-main">
           <div className="prod-top">
@@ -134,12 +144,20 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
                         href={file.url as string}
                         target="_blank"
                         rel="noopener"
+                        hrefLang={doc.language || undefined}
                       >
-                        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.7">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 32 32"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                        >
                           <use href="#i-doc" />
                         </svg>
-                        {doc.label || DOC_LABELS[doc.kind] || 'Dokument'}
-                        <span className="doc-btn__ext">PDF</span>
+                        {docLabel(doc)}
+                        <span className="doc-btn__ext">{d.pdf}</span>
                       </a>
                     )
                   })}
@@ -147,8 +165,15 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               )}
 
               <a className="btn btn-primary prod-cta" href="#paring">
-                K&uuml;si hinnap&auml;ring
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                {d.askPrice}
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
                   <use href="#i-arrow" />
                 </svg>
               </a>
@@ -157,7 +182,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
 
           {product.description ? (
             <section className="prod-block">
-              <h2>Kirjeldus</h2>
+              <h2>{d.description}</h2>
               <div className="prose">
                 <RichText data={product.description} />
               </div>
@@ -166,7 +191,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
 
           {measures.length > 0 && (
             <section className="prod-block">
-              <h2>Tehnilised andmed</h2>
+              <h2>{d.specs}</h2>
               <table className="spec">
                 <tbody>
                   {measures.map((row, i) => (
@@ -180,20 +205,32 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             </section>
           )}
 
-          {(docs.length > 0 || otherDocs.length > 0) && (
+          {docs.length > 0 && (
             <section className="prod-block">
-              <h2>Dokumendid</h2>
+              <h2>{d.documents}</h2>
               <ul className="doc-list">
                 {docs.map((doc, i) => {
                   const file = fileOf(doc.file) as Media
                   return (
                     <li key={i}>
-                      <a href={file.url as string} target="_blank" rel="noopener">
-                        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.7">
+                      <a
+                        href={file.url as string}
+                        target="_blank"
+                        rel="noopener"
+                        hrefLang={doc.language || undefined}
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 32 32"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                        >
                           <use href="#i-doc" />
                         </svg>
-                        <span>{doc.label || DOC_LABELS[doc.kind] || 'Dokument'}</span>
-                        <em>{DOC_LABELS[doc.kind] || 'Dokument'}</em>
+                        <span>{docLabel(doc)}</span>
+                        <em>{d.docKinds[doc.kind] || d.docKinds.muu}</em>
                       </a>
                     </li>
                   )
@@ -204,7 +241,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
 
           {gallery.length > 0 && (
             <section className="prod-block">
-              <h2>Pildid</h2>
+              <h2>{d.images}</h2>
               <ul className="prod-gallery">
                 {gallery.map((img) => (
                   <li key={img.id}>
@@ -222,12 +259,14 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               productId={product.id}
               productTitle={product.title}
               sourceUrl={productHref(product)}
+              locale={locale}
+              strings={formStrings(locale)}
             />
           </section>
 
           {siblings.length > 0 && (
             <section className="prod-block">
-              <h2>Samast kategooriast</h2>
+              <h2>{d.related}</h2>
               <ul className="rel-list">
                 {siblings.map((s: Product) => (
                   <li key={s.id}>

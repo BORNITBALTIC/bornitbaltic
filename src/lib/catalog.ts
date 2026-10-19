@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { Category, Product } from '@/payload-types'
+import { DEFAULT_LOCALE, type Locale } from './i18n'
 
 export type CategoryNode = Category & { children: Category[] }
 
@@ -13,7 +14,7 @@ const idOf = (value: unknown): string | number | null => {
 }
 
 /** Kategooriapuu: peakategooriad koos alamkategooriatega, jarjekorras. */
-export const getCategoryTree = async (): Promise<CategoryNode[]> => {
+export const getCategoryTree = async (locale: Locale = DEFAULT_LOCALE): Promise<CategoryNode[]> => {
   const payload = await client()
   const { docs } = await payload.find({
     collection: 'categories',
@@ -21,6 +22,7 @@ export const getCategoryTree = async (): Promise<CategoryNode[]> => {
     pagination: false,
     sort: ['order', 'name'],
     depth: 0,
+    locale,
   })
 
   const tops = docs.filter((c) => !c.parent)
@@ -32,7 +34,10 @@ export const getCategoryTree = async (): Promise<CategoryNode[]> => {
   }))
 }
 
-export const getCategoryBySlug = async (slug: string): Promise<Category | null> => {
+export const getCategoryBySlug = async (
+  slug: string,
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<Category | null> => {
   const payload = await client()
   const { docs } = await payload.find({
     collection: 'categories',
@@ -40,6 +45,7 @@ export const getCategoryBySlug = async (slug: string): Promise<Category | null> 
     limit: 1,
     pagination: false,
     depth: 1,
+    locale,
   })
   return docs[0] ?? null
 }
@@ -59,6 +65,7 @@ export const getCategoryWithDescendants = async (category: Category): Promise<(s
 
 export const getProductsByCategories = async (
   categoryIds: (string | number)[],
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<Product[]> => {
   if (!categoryIds.length) return []
   const payload = await client()
@@ -70,6 +77,7 @@ export const getProductsByCategories = async (
     sort: 'title',
     // depth 2, et kategooria vanem oleks olemas ja URL tuleks taispikk
     depth: 2,
+    locale,
   })
   return docs
 }
@@ -86,7 +94,10 @@ export const getAllProducts = async (): Promise<Product[]> => {
   return docs
 }
 
-export const getProductBySlug = async (slug: string): Promise<Product | null> => {
+export const getProductBySlug = async (
+  slug: string,
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<Product | null> => {
   const payload = await client()
   const { docs } = await payload.find({
     collection: 'products',
@@ -94,6 +105,7 @@ export const getProductBySlug = async (slug: string): Promise<Product | null> =>
     limit: 1,
     pagination: false,
     depth: 2,
+    locale,
   })
   return docs[0] ?? null
 }
@@ -132,11 +144,40 @@ export const mainImage = (product: Product) => {
   return first && typeof first === 'object' ? first : null
 }
 
-export const DOC_LABELS: Record<string, string> = {
-  tehniline_info: 'Tehniline info',
-  ohutuskaart: 'Ohutuskaart',
-  infoleht: 'Infoleht',
-  toimivusdeklaratsioon: 'Toimivusdeklaratsioon',
-  kasutusjuhend: 'Kasutusjuhend',
-  muu: 'Dokument',
+type ProductDoc = NonNullable<Product['documents']>[number]
+
+/**
+ * Valib iga dokumendi jaoks kasutaja keelele koige lahedasema faili.
+ *
+ * Sama dokument eri keeltes on eraldi read, mida seob tuup + nupu tekst.
+ * Eelistus: tapne keel -> inglise -> eesti -> esimene olemasolev.
+ * Nii naeb soome keele valinud kasutaja inglisekeelset ohutuskaarti,
+ * kui soomekeelset ei ole.
+ */
+export const pickDocuments = (
+  documents: ProductDoc[] | null | undefined,
+  locale: Locale,
+): ProductDoc[] => {
+  const list = Array.isArray(documents) ? documents : []
+  if (!list.length) return []
+
+  const groups = new Map<string, ProductDoc[]>()
+  for (const doc of list) {
+    const key = `${doc.kind}::${(doc.label || '').trim().toLowerCase()}`
+    const bucket = groups.get(key)
+    if (bucket) bucket.push(doc)
+    else groups.set(key, [doc])
+  }
+
+  const preference = [locale, 'en', 'et']
+  const picked: ProductDoc[] = []
+  for (const bucket of groups.values()) {
+    let chosen: ProductDoc | undefined
+    for (const want of preference) {
+      chosen = bucket.find((d) => d.language === want)
+      if (chosen) break
+    }
+    picked.push(chosen ?? bucket[0])
+  }
+  return picked
 }
