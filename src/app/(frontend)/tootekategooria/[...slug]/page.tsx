@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
 import CategorySidebar from '@/components/CategorySidebar'
@@ -11,6 +11,7 @@ import {
   getCategoryTree,
   getCategoryWithDescendants,
   getProductsByCategories,
+  getRedirectTarget,
 } from '@/lib/catalog'
 import { dict, getLocale } from '@/lib/i18n'
 
@@ -41,7 +42,12 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
 
   const { slug } = await params
   const category = await getCategoryBySlug(leafSlug(slug), locale)
-  if (!category) notFound()
+  if (!category) {
+    // kategooria on umber nimetatud voi liidetud: suunamine administ, muidu 404
+    const target = await getRedirectTarget('/tootekategooria/' + slug.join('/'))
+    if (target) permanentRedirect(target)
+    notFound()
+  }
 
   const [tree, ids] = await Promise.all([
     getCategoryTree(locale),

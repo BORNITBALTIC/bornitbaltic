@@ -71,6 +71,7 @@ export interface Config {
     categories: Category;
     media: Media;
     inquiries: Inquiry;
+    redirects: Redirect;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -83,6 +84,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -98,8 +100,12 @@ export interface Config {
     | null
     | ('et' | 'en' | 'fi' | 'lv' | 'lt')
     | ('et' | 'en' | 'fi' | 'lv' | 'lt')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-content': SiteContent;
+  };
+  globalsSelect: {
+    'site-content': SiteContentSelect<false> | SiteContentSelect<true>;
+  };
   locale: 'et' | 'en' | 'fi' | 'lv' | 'lt';
   widgets: {
     collections: CollectionsWidget;
@@ -136,6 +142,7 @@ export interface UserAuthOperations {
  */
 export interface Product {
   id: number;
+  _order?: string | null;
   title: string;
   /**
    * Ara muuda ilma pohjuseta: vana URL on Google'is indekseeritud.
@@ -190,6 +197,16 @@ export interface Product {
     | {
         nimi: string;
         vaartus: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Laheb tootelehele eraldi plokina "Joonised ja illustratsioonid". Sobivad PNG, JPG, SVG ja PDF. Allkiri on keelte kaupa.
+   */
+  drawings?:
+    | {
+        file: number | Media;
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -348,6 +365,29 @@ export interface Inquiry {
   createdAt: string;
 }
 /**
+ * Kui toote voi kategooria aadress muutub, lisa siia vana aadress ja uus aadress. Vana link hakkab automaatselt uuele lehele viima.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  /**
+   * Ilma domeenita, naiteks /tooted/vuugid-praod/bornit-fugenflex/
+   */
+  from: string;
+  /**
+   * Naiteks /tooted/vuugitihendustooted/vuugiliimid/bornit-fugenflex/
+   */
+  to: string;
+  /**
+   * Vabatahtlik: miks suunamine tehti.
+   */
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -414,6 +454,10 @@ export interface PayloadLockedDocument {
         value: number | Inquiry;
       } | null)
     | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null);
@@ -464,6 +508,7 @@ export interface PayloadMigration {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   slug?: T;
   category?: T;
@@ -476,6 +521,13 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         nimi?: T;
         vaartus?: T;
+        id?: T;
+      };
+  drawings?:
+    | T
+    | {
+        file?: T;
+        caption?: T;
         id?: T;
       };
   documents?:
@@ -596,6 +648,17 @@ export interface InquiriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -656,6 +719,85 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Teenuste ja tehtud toode plokid avalehel. Tekstid on keelte kaupa (keelevalik ules paremal).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-content".
+ */
+export interface SiteContent {
+  id: number;
+  /**
+   * Nait: Müüme materjali ja paigaldame selle ise
+   */
+  servicesTitle?: string | null;
+  services?:
+    | {
+        icon?:
+          | (
+              | 'i-truck'
+              | 'i-hand'
+              | 'i-gear'
+              | 'i-doc'
+              | 'i-hydro'
+              | 'i-road'
+              | 'i-joint'
+              | 'i-roof'
+              | 'i-tool'
+              | 'i-spray'
+              | 'i-marking'
+            )
+          | null;
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Nait: Objektid, kus materjal on juba töös
+   */
+  worksTitle?: string | null;
+  works?:
+    | {
+        image: number | Media;
+        title: string;
+        /**
+         * Nait: Vuugiliim, praosaneerimine ja märgistus — Harjumaa
+         */
+        meta?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-content_select".
+ */
+export interface SiteContentSelect<T extends boolean = true> {
+  servicesTitle?: T;
+  services?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  worksTitle?: T;
+  works?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        meta?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

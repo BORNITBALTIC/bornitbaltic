@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import type { Category, Product } from '@/payload-types'
+import type { Category, Product, SiteContent } from '@/payload-types'
 import { DEFAULT_LOCALE, type Locale } from './i18n'
 
 export type CategoryNode = Category & { children: Category[] }
@@ -74,7 +74,8 @@ export const getProductsByCategories = async (
     where: { category: { in: categoryIds } },
     limit: 500,
     pagination: false,
-    sort: 'title',
+    // kasitsi jarjestus administ (orderable), sama nimi tahestikus
+    sort: ['_order', 'title'],
     // depth 2, et kategooria vanem oleks olemas ja URL tuleks taispikk
     depth: 2,
     locale,
@@ -88,7 +89,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
     collection: 'products',
     limit: 1000,
     pagination: false,
-    sort: 'title',
+    sort: ['_order', 'title'],
     depth: 2,
   })
   return docs
@@ -180,4 +181,32 @@ export const pickDocuments = (
     picked.push(chosen ?? bucket[0])
   }
   return picked
+}
+
+/**
+ * Suunamine vanalt aadressilt (Redirects kollektsioon). Kasutatakse enne 404 andmist,
+ * et kategooriate umberkorraldus ei lohuks Google'is indekseeritud linke.
+ */
+export const getRedirectTarget = async (pathname: string): Promise<string | null> => {
+  const from = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
+  const payload = await client()
+  const { docs } = await payload.find({
+    collection: 'redirects',
+    where: { from: { equals: from } },
+    limit: 1,
+    pagination: false,
+    depth: 0,
+  })
+  const to = docs[0]?.to
+  return to && to !== from ? to : null
+}
+
+/** Avalehe muudetav sisu (teenused, tehtud tood). */
+export const getSiteContent = async (locale: Locale = DEFAULT_LOCALE): Promise<SiteContent | null> => {
+  try {
+    const payload = await client()
+    return await payload.findGlobal({ slug: 'site-content', depth: 1, locale })
+  } catch {
+    return null
+  }
 }

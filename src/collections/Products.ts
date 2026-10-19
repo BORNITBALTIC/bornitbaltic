@@ -17,6 +17,8 @@ export const Products: CollectionConfig = {
   },
   access: { read: () => true },
   versions: { drafts: true },
+  // Kasitsi jarjestus: admini nimekirjas lohistades (kliendi punkt 3). Lehed sorteerivad _order jargi.
+  orderable: true,
   fields: [
     {
       name: 'title',
@@ -104,6 +106,37 @@ export const Products: CollectionConfig = {
               fields: [
                 { name: 'nimi', type: 'text', label: 'Nimi', required: true },
                 { name: 'vaartus', type: 'text', label: 'Vaartus', required: true },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Joonised',
+          fields: [
+            {
+              name: 'drawings',
+              type: 'array',
+              label: 'Tehnilised joonised ja illustratsioonid',
+              labels: { singular: 'Joonis', plural: 'Joonised' },
+              admin: {
+                description:
+                  'Laheb tootelehele eraldi plokina "Joonised ja illustratsioonid". '
+                  + 'Sobivad PNG, JPG, SVG ja PDF. Allkiri on keelte kaupa.',
+              },
+              fields: [
+                {
+                  name: 'file',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Fail',
+                  required: true,
+                },
+                {
+                  name: 'caption',
+                  type: 'text',
+                  label: 'Allkiri',
+                  localized: true,
+                },
               ],
             },
           ],

@@ -33,6 +33,7 @@ type Dict = {
   specs: string
   documents: string
   images: string
+  drawings: string
   related: string
   askPrice: string
   empty: string
@@ -74,6 +75,7 @@ const DICTS: Record<Locale, Dict> = {
     specs: 'Tehnilised andmed',
     documents: 'Dokumendid',
     images: 'Pildid',
+    drawings: 'Joonised ja illustratsioonid',
     related: 'Samast kategooriast',
     askPrice: 'Küsi hinnapäring',
     empty: 'Selles kategoorias pole veel tooteid.',
@@ -121,6 +123,7 @@ const DICTS: Record<Locale, Dict> = {
     specs: 'Technical data',
     documents: 'Documents',
     images: 'Images',
+    drawings: 'Drawings and illustrations',
     related: 'From the same category',
     askPrice: 'Request a quote',
     empty: 'No products in this category yet.',
@@ -168,6 +171,7 @@ const DICTS: Record<Locale, Dict> = {
     specs: 'Tekniset tiedot',
     documents: 'Asiakirjat',
     images: 'Kuvat',
+    drawings: 'Piirustukset ja kuvitukset',
     related: 'Samasta ryhmästä',
     askPrice: 'Pyydä tarjous',
     empty: 'Tässä ryhmässä ei ole vielä tuotteita.',
@@ -215,6 +219,7 @@ const DICTS: Record<Locale, Dict> = {
     specs: 'Tehniskie dati',
     documents: 'Dokumenti',
     images: 'Attēli',
+    drawings: 'Rasējumi un ilustrācijas',
     related: 'No tās pašas kategorijas',
     askPrice: 'Pieprasīt cenu',
     empty: 'Šajā kategorijā vēl nav produktu.',
@@ -270,6 +275,7 @@ const DICTS: Record<Locale, Dict> = {
     specs: 'Techniniai duomenys',
     documents: 'Dokumentai',
     images: 'Nuotraukos',
+    drawings: 'Brėžiniai ir iliustracijos',
     related: 'Iš tos pačios kategorijos',
     askPrice: 'Prašyti kainos',
     empty: 'Šioje kategorijoje produktų kol kas nėra.',
