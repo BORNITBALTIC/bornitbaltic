@@ -17,9 +17,10 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   const collator = new Intl.Collator('et', { sensitivity: 'base', numeric: true })
   rows.sort((a, b) => collator.compare(a.title ?? '￿', b.title ?? '￿') || a.id - b.id)
 
-  const digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-  const keyFor = (i: number) =>
-    i < 62 ? 'a' + digits[i] : 'b' + digits[Math.floor((i - 62) / 62)] + digits[(i - 62) % 62]
+  // Ainult numbrid parast 'a0', et Postgresi en_US collation (aA < aa < aB) jarjekorda
+  // segi ei ajaks. Kuju a0NNN1 on kehtiv fractional-indexing voti (ei lope nulliga)
+  // ja uued tooted saavad Payloadilt 'a1', mis jaab koigi nende jarele.
+  const keyFor = (i: number) => 'a0' + String(i).padStart(4, '0') + '1'
   for (let i = 0; i < rows.length; i++) {
     await db.execute(sql`UPDATE products SET _order = ${keyFor(i)} WHERE id = ${rows[i].id}`)
   }
