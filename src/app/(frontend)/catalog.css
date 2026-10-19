@@ -667,8 +667,8 @@
   width: 100%;
   height: auto;
   /* madal riba, mitte poolt ekraani taitev pilt */
-  aspect-ratio: 21 / 8;
-  max-height: 440px;
+  aspect-ratio: 4 / 1;
+  max-height: 300px;
   object-fit: cover;
   object-position: center 60%;
 }
@@ -687,8 +687,8 @@
 @media (max-width: 680px) {
   /* kitsal ekraanil jaaks 2:1 riba liiga madalaks */
   .hero-art img {
-    aspect-ratio: 4 / 3;
-    max-height: 320px;
+    aspect-ratio: 16 / 9;
+    max-height: 220px;
   }
 }
 
@@ -854,3 +854,14 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ============================================================
+   Hero kompaktsemaks: nupud ja numbrid peavad esimesel ekraanil nahtavad olema.
+   ============================================================ */
+.hero { padding-top: clamp(32px, 4vw, 52px); }
+.hero h1 { font-size: clamp(32px, 4.6vw, 60px); line-height: 0.98; }
+.hero p { margin-top: 16px; font-size: clamp(15px, 1.3vw, 17px); max-width: 56ch; }
+.hero-actions { margin-top: 22px; }
+.hero-meta { margin-top: 26px; padding-top: 18px; gap: 0 36px; }
+.hero-meta b { font-size: 24px; }
+.hero-art { margin-top: clamp(20px, 3vw, 32px); }
