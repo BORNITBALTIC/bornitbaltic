@@ -666,9 +666,11 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 2 / 1;
+  /* madal riba, mitte poolt ekraani taitev pilt */
+  aspect-ratio: 21 / 8;
+  max-height: 440px;
   object-fit: cover;
-  object-position: center 55%;
+  object-position: center 60%;
 }
 .work .pic img {
   display: block;
@@ -685,7 +687,8 @@
 @media (max-width: 680px) {
   /* kitsal ekraanil jaaks 2:1 riba liiga madalaks */
   .hero-art img {
-    aspect-ratio: 3 / 2;
+    aspect-ratio: 4 / 3;
+    max-height: 320px;
   }
 }
 
