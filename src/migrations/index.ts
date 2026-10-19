@@ -1,6 +1,7 @@
 import * as migration_20260924_105125 from './20260924_105125';
 import * as migration_20261019_132110_dokumendi_keel from './20261019_132110_dokumendi_keel';
 import * as migration_20261019_132606_joonised_jarjestus_suunamised_avaleht from './20261019_132606_joonised_jarjestus_suunamised_avaleht';
+import * as migration_20261019_150000_jarjekord_tahestik from './20261019_150000_jarjekord_tahestik';
 
 export const migrations = [
   {
@@ -17,5 +18,10 @@ export const migrations = [
     up: migration_20261019_132606_joonised_jarjestus_suunamised_avaleht.up,
     down: migration_20261019_132606_joonised_jarjestus_suunamised_avaleht.down,
     name: '20261019_132606_joonised_jarjestus_suunamised_avaleht'
+  },
+  {
+    up: migration_20261019_150000_jarjekord_tahestik.up,
+    down: migration_20261019_150000_jarjekord_tahestik.down,
+    name: '20261019_150000_jarjekord_tahestik'
   },
 ];

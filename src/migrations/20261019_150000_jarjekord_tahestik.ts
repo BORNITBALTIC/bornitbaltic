@@ -1,0 +1,30 @@
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+
+/**
+ * Parandab toodete algjarjekorra. Eelmine migratsioon luges products_locales
+ * liitumisest mitu rida toote kohta ja jarjekord laks kahe tahestiku vahele
+ * segamini. Siin votame iga toote eestikeelse pealkirja uks kord ja sorteerime
+ * Node'is eesti keele reeglite jargi.
+ */
+export async function up({ db }: MigrateUpArgs): Promise<void> {
+  const res = (await db.execute(sql`
+    SELECT DISTINCT ON (p.id) p.id, l.title
+    FROM products p
+    LEFT JOIN products_locales l ON l._parent_id = p.id AND l._locale = 'et'
+    ORDER BY p.id, l.id
+  `)) as unknown as { rows: { id: number; title: string | null }[] }
+  const rows = [...(res.rows ?? [])]
+  const collator = new Intl.Collator('et', { sensitivity: 'base', numeric: true })
+  rows.sort((a, b) => collator.compare(a.title ?? '￿', b.title ?? '￿') || a.id - b.id)
+
+  const digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  const keyFor = (i: number) =>
+    i < 62 ? 'a' + digits[i] : 'b' + digits[Math.floor((i - 62) / 62)] + digits[(i - 62) % 62]
+  for (let i = 0; i < rows.length; i++) {
+    await db.execute(sql`UPDATE products SET _order = ${keyFor(i)} WHERE id = ${rows[i].id}`)
+  }
+}
+
+export async function down(_args: MigrateDownArgs): Promise<void> {
+  // jarjekorra vaartused jaavad; tagasi poordumisel pole midagi lohkuda
+}
