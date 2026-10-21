@@ -161,7 +161,8 @@ const downloadToTemp = async (url: string): Promise<string | null> => {
 const brandOf = (title: string, brands: string[]): 'bornit' | 'grun' | 'silikal' | 'muu' => {
   const hay = (title + ' ' + brands.join(' ')).toUpperCase()
   if (hay.includes('SILIKAL')) return 'silikal'
-  if (hay.includes('GRUN') || hay.includes('GRÜN')) return 'grun'
+  // terve sona, muidu loeti "BituGRUNd", "BasisGRUNd" jne GRÜN-iks
+  if (/\bGR[UÜ]N\b/.test(hay) && !hay.startsWith('BORNIT')) return 'grun'
   if (hay.includes('BORNIT')) return 'bornit'
   return 'muu'
 }

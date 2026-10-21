@@ -6,6 +6,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import CategorySidebar from '@/components/CategorySidebar'
 import InquiryForm from '@/components/InquiryForm'
+import JsonLd from '@/components/JsonLd'
 import ProductGrid from '@/components/ProductGrid'
 import {
   categoryHref,
@@ -18,6 +19,8 @@ import {
   productHref,
 } from '@/lib/catalog'
 import { dict, formStrings, getLocale } from '@/lib/i18n'
+import { localizePath } from '@/lib/locale-path'
+import { absolute, breadcrumbLd, clip, pageMetadata, plainText } from '@/lib/seo'
 import type { Media } from '@/payload-types'
 
 type Params = { slug: string[] }
@@ -29,13 +32,19 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>
 }): Promise<Metadata> {
+  const locale = await getLocale()
   const { slug } = await params
-  const product = await getProductBySlug(leafSlug(slug))
-  if (!product) return { title: 'Toodet ei leitud | Bornit Baltic' }
-  return {
-    title: `${product.title} | Bornit Baltic`,
-    description: product.meta?.description || undefined,
-  }
+  const product = await getProductBySlug(leafSlug(slug), locale)
+  if (!product) return { title: dict(locale).empty, robots: { index: false } }
+  const images = Array.isArray(product.images) ? product.images : []
+  const first = images[0] && typeof images[0] === 'object' ? (images[0] as Media) : null
+  return pageMetadata({
+    path: productHref(product),
+    locale,
+    title: product.meta?.title?.replace(/\s*\|\s*Bornit Baltic\s*$/, '') || product.title,
+    description: product.meta?.description || plainText(product.lead) || plainText(product.description),
+    image: first?.url || null,
+  })
 }
 
 export const dynamic = 'force-dynamic'
@@ -76,9 +85,9 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   if (!product) {
     // 1) suunamine administ (kategooriate umberkorraldus), 2) /tooted/<kategooria>, 3) 404
     const target = await getRedirectTarget('/tooted/' + slug.join('/'))
-    if (target) permanentRedirect(target)
+    if (target) permanentRedirect(localizePath(target, locale))
     const asCategory = await getCategoryBySlug(last, locale)
-    if (asCategory) redirect(categoryHref(asCategory))
+    if (asCategory) redirect(categoryHref(asCategory, locale))
     notFound()
   }
 
@@ -115,22 +124,45 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
 
   return (
     <main className="prod-page">
+      <JsonLd
+        data={[
+          breadcrumbLd([
+            { name: d.home, path: localizePath('/', locale) },
+            { name: d.products, path: localizePath('/tooted', locale) },
+            ...(parent ? [{ name: parent.name, path: categoryHref(parent, locale) }] : []),
+            ...(category ? [{ name: category.name, path: categoryHref(category, locale) }] : []),
+            { name: product.title, path: productHref(product, locale) },
+          ]),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.title,
+            description: clip(plainText(product.lead) || plainText(product.description) || product.title, 500),
+            url: absolute(productHref(product, locale)),
+            image: images.map((m) => absolute(m.url as string)),
+            category: category?.name,
+            ...(product.brand && product.brand !== 'muu'
+              ? { brand: { '@type': 'Brand', name: ({ bornit: 'BORNIT', grun: 'GRÜN', silikal: 'SILIKAL' } as Record<string, string>)[product.brand] } }
+              : {}),
+          },
+        ]}
+      />
       <div className="cat-head">
         <div className="wrap">
           <nav className="crumbs" aria-label={d.breadcrumb}>
-            <Link href="/">{d.home}</Link>
+            <Link href={localizePath('/', locale)}>{d.home}</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/tooted">{d.products}</Link>
+            <Link href={localizePath('/tooted', locale)}>{d.products}</Link>
             {parent && (
               <>
                 <span aria-hidden="true">/</span>
-                <Link href={categoryHref(parent)}>{parent.name}</Link>
+                <Link href={categoryHref(parent, locale)}>{parent.name}</Link>
               </>
             )}
             {category && (
               <>
                 <span aria-hidden="true">/</span>
-                <Link href={categoryHref(category)}>{category.name}</Link>
+                <Link href={categoryHref(category, locale)}>{category.name}</Link>
               </>
             )}
           </nav>
@@ -183,7 +215,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
                 ) : null}
                 {category ? (
                   <li>
-                    <Link href={categoryHref(category)}>{category.name}</Link>
+                    <Link href={categoryHref(category, locale)}>{category.name}</Link>
                   </li>
                 ) : null}
                 {measures[0] ? (
@@ -315,7 +347,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               <h2>{d.related}</h2>
               <ProductGrid products={siblings} locale={locale} />
               {category ? (
-                <Link className="prod-related__more" href={categoryHref(category)}>
+                <Link className="prod-related__more" href={categoryHref(category, locale)}>
                   {category.name} →
                 </Link>
               ) : null}

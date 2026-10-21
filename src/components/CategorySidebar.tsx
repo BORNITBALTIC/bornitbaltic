@@ -31,7 +31,7 @@ export default function CategorySidebar({
             return (
               <li key={node.id} className={open ? 'is-open' : undefined}>
                 <Link
-                  href={categoryHref(node)}
+                  href={categoryHref(node, locale)}
                   className={node.slug === activeSlug ? 'is-current' : undefined}
                 >
                   {node.name}
@@ -41,7 +41,7 @@ export default function CategorySidebar({
                     {node.children.map((child) => (
                       <li key={child.id}>
                         <Link
-                          href={subCategoryHref(node.slug, child.slug)}
+                          href={subCategoryHref(node.slug, child.slug, locale)}
                           className={child.slug === activeSlug ? 'is-current' : undefined}
                         >
                           {child.name}

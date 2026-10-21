@@ -5,6 +5,8 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
+import { en } from '@payloadcms/translations/languages/en'
+import { et } from '@payloadcms/translations/languages/et'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
@@ -13,6 +15,7 @@ import { Inquiries } from './collections/Inquiries'
 import { Media } from './collections/Media'
 import { Products } from './collections/Products'
 import { Users } from './collections/Users'
+import { Posts } from './collections/Posts'
 import { Redirects } from './collections/Redirects'
 import { SiteContent } from './globals/SiteContent'
 
@@ -66,9 +69,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Products, Categories, Media, Inquiries, Redirects, Users],
+  collections: [Products, Categories, Posts, Media, Inquiries, Redirects, Users],
   globals: [SiteContent],
   editor: lexicalEditor(),
+  // halduskeskkond eesti keeles (kasutaja saab profiilis inglise keele valida)
+  i18n: { supportedLanguages: { et, en }, fallbackLanguage: 'et' },
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
   typescript: {
@@ -97,7 +102,7 @@ export default buildConfig({
       collections: ['products', 'categories'],
       uploadsCollection: 'media',
       generateTitle: ({ doc }) => `${doc?.title || doc?.name || ''} | Bornit Baltic`,
-      generateURL: ({ doc }) => `https://bornitbaltic.ee/tooted/${doc?.slug || ''}/`,
+      generateURL: ({ doc }) => `https://bornitbaltic.ee/tooted/${doc?.slug || ''}`,
     }),
   ],
 })

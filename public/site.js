@@ -650,7 +650,7 @@ const T = {
     "s3h": "Equipment",
     "s3p": "Applicators for joint adhesive and crack mastic, and bitumen boilers — for sale and hire.",
     "s4h": "Technical advice",
-    "s4p": "Data sheets, consumption rates and instructions in your language, before you order.",
+    "s4p": "Technical data sheets, consumption rates and installation instructions before you order.",
     "w-h2": "Sites where the material is already at work",
     "w1h": "Shopping centre car park",
     "w1m": "Joint adhesive, crack repair and markings — Harju county",
@@ -663,7 +663,7 @@ const T = {
     "b-p2": "Bornit Baltic OÜ represents BORNIT® in Estonia, Latvia, Lithuania and Finland — the same range, local stock and technical support in your language.",
     "b-f1": "Year the factory was founded",
     "b-f2": "generations of family production",
-    "b-f3": "made in Zwickau, Germany",
+    "b-f3": "BORNIT® factory in Zwickau, Germany",
     "b-f4": "representative for the Baltics and Finland",
     "k-h2": "Describe the site, we'll send a price",
     "k-lede": "The type of site and a rough quantity is enough. If you need it, we help choose the material and calculate consumption.",
@@ -733,7 +733,7 @@ const T = {
     "s3h": "Laitteet",
     "s3p": "Saumaliiman ja halkeamamassan levityslaitteet sekä bitumipadat — myyntiin ja vuokralle.",
     "s4h": "Tekninen neuvonta",
-    "s4p": "Tuotetiedot, menekit ja asennusohjeet omalla kielelläsi, jo ennen tilausta.",
+    "s4p": "Tekniset tietolehdet, menekit ja asennusohjeet ennen tilausta.",
     "w-h2": "Kohteet, joissa materiaali on jo työssä",
     "w1h": "Kauppakeskuksen pysäköintialue",
     "w1m": "Saumaliima, halkeamien korjaus ja merkinnät — Harjumaa",
@@ -746,7 +746,7 @@ const T = {
     "b-p2": "Bornit Baltic OÜ edustaa BORNIT®-merkkiä Virossa, Latviassa, Liettuassa ja Suomessa — sama valikoima, paikallinen varasto ja tekninen tuki omalla kielelläsi.",
     "b-f1": "Tehtaan perustamisvuosi",
     "b-f2": "sukupolvea perheyritystä",
-    "b-f3": "valmistettu Saksassa, Zwickaussa",
+    "b-f3": "BORNIT®-tehdas sijaitsee Zwickaussa, Saksassa",
     "b-f4": "edustaja Baltiassa ja Suomessa",
     "k-h2": "Kerro kohteesta, lähetämme hinnan",
     "k-lede": "Kohteen tyyppi ja suuntaa-antava määrä riittävät. Tarvittaessa autamme materiaalin valinnassa ja laskemme menekin puolestasi.",
@@ -808,7 +808,7 @@ const T = {
     "s3h": "Iekārtas",
     "s3p": "Šuvju līmes un plaisu mastikas uzklāšanas iekārtas un bitumena katli — pārdošanai un nomai.",
     "s4h": "Tehniskās konsultācijas",
-    "s4p": "Datu lapas, patēriņa normas un montāžas instrukcijas tavā valodā, jau pirms pasūtīšanas.",
+    "s4p": "Tehniskās datu lapas, patēriņa normas un uzstādīšanas instrukcijas pirms pasūtīšanas.",
     "w-h2": "Objekti, kur materiāls jau strādā",
     "w1h": "Tirdzniecības centra stāvlaukums",
     "w1m": "Šuvju līme, plaisu remonts un marķējums — Harjumaa",
@@ -821,7 +821,7 @@ const T = {
     "b-p2": "Bornit Baltic OÜ pārstāv BORNIT® Igaunijā, Latvijā, Lietuvā un Somijā — tas pats klāsts, vietēja noliktava un tehniskais atbalsts tavā valodā.",
     "b-f1": "Rūpnīcas dibināšanas gads",
     "b-f2": "paaudzes ģimenes ražošanas",
-    "b-f3": "ražots Vācijā, Cvikavā",
+    "b-f3": "BORNIT® rūpnīca atrodas Cvikavā, Vācijā",
     "b-f4": "pārstāvis Baltijā un Somijā",
     "k-h2": "Apraksti objektu, nosūtīsim cenu",
     "k-lede": "Pietiek ar objekta veidu un aptuvenu daudzumu. Ja vajag, palīdzēsim izvēlēties materiālu un aprēķināsim patēriņu.",
@@ -918,7 +918,10 @@ const ET_DEFAULTS = {aAdd:"Lisa päringusse",aAdded:"Lisatud",aView:"Vaata toote
   aPickP:"Vali koht, mis lekib, praguneb või vajab kaitset — näitame, milline materjal sinna kuulub.",
   doneH:"Päring saadetud",doneP:"Vastame tööpäeva jooksul. Kiire asja korral helista +372 526 5087."};
 
-let LANG = "et";
+/* Keel tuleb serverist (<html lang>): igal keelel on oma URL (/en, /fi, /lv). */
+let LANG = (document.documentElement.lang || "et").slice(0,2);
+const PREFIX = LANG === "et" ? "" : "/" + LANG;
+const lp = href => (href && href.startsWith("/") && !href.startsWith("//")) ? (PREFIX && href === "/" ? PREFIX : PREFIX + href) : href;
 const ET_SNAP = new Map();
 document.querySelectorAll("[data-i18n]").forEach(el=>ET_SNAP.set(el,el.textContent));
 document.querySelectorAll("[data-i18n-ph]").forEach(el=>ET_SNAP.set(el,el.placeholder));
@@ -949,7 +952,7 @@ function setLang(l){
 function buildIndex(){
   const host = document.getElementById("idx");
   if(host) host.innerHTML = CATEGORIES.map(c=>`
-    <a href="${c.href}">
+    <a href="${lp(c.href)}">
       <span class="ico"><svg><use href="#${c.icon}"/></svg></span>
       <span class="nm">${loc(c.nm)}</span>
       <span class="ds">${loc(c.ds)}</span>
@@ -957,7 +960,7 @@ function buildIndex(){
     </a>`).join("");
   const fCats = document.getElementById("fCats");
   if(fCats) fCats.innerHTML =
-    CATEGORIES.slice(0,5).map(c=>`<li><a href="${c.href}">${loc(c.nm)}</a></li>`).join("");
+    CATEGORIES.slice(0,5).map(c=>`<li><a href="${lp(c.href)}">${loc(c.nm)}</a></li>`).join("");
 }
 
 /* ---------- finder ---------- */
@@ -985,7 +988,7 @@ function renderAnswer(id){
     <p class="sol">${loc(s.sol)}</p>
     <ul>${loc(s.items).map(i=>`<li>${i}</li>`).join("")}</ul>
     <div class="acts">
-      <a class="btn btn-primary" href="${cat.href}">${t("aView")}</a>
+      <a class="btn btn-primary" href="${lp(cat.href)}">${t("aView")}</a>
     </div>`;
   box.classList.remove("fade-swap"); void box.offsetWidth; box.classList.add("fade-swap");
 }
@@ -1064,7 +1067,8 @@ if(lang){
     lang.classList.toggle("open");
     lang.querySelector("button").setAttribute("aria-expanded", lang.classList.contains("open"));
   });
-  lang.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{rememberLang(b.dataset.lang);setLang(b.dataset.lang);lang.classList.remove("open");}));
+  // keelevaliku lingid viivad sama lehe teise keeleversiooni; kypsis jatab valiku meelde
+  lang.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{rememberLang(b.dataset.lang);}));
   document.addEventListener("click",e=>{if(!lang.contains(e.target))lang.classList.remove("open");});
 }
 
@@ -1086,8 +1090,8 @@ const yr = document.getElementById("yr");
 if(yr) yr.textContent = new Date().getFullYear();
 buildIndex(); buildSymptoms(); renderAnswer(null);
 
-const saved = storedLang();
-if(saved && saved !== "et") setLang(saved);
+// keel on URL-is; leht tuleb serverist juba oiges keeles
+rememberLang(LANG);
 
 /* ---- */
 

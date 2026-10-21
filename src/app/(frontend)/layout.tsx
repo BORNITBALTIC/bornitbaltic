@@ -2,19 +2,30 @@ import React from 'react'
 import Script from 'next/script'
 import type { Metadata } from 'next'
 
-import { footerHtml, headerHtml, iconDefs } from '@/lib/template'
+import { getLocale, getPath } from '@/lib/i18n'
+import { extra } from '@/lib/i18n-extra'
+import { SITE_URL } from '@/lib/seo'
+import { footerFor, headerFor, iconDefs } from '@/lib/template'
 import './styles.css'
 import './catalog.css'
 
-export const metadata: Metadata = {
-  title: 'Bornit Baltic — BORNIT® esindaja Baltikumis ja Soomes',
-  description:
-    'Bituumenmaterjalide projektimüük ja paigaldus. Hüdroisolatsioon, vuugitihendus, teedeehitusmaterjalid ja märgistus.',
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+  const x = extra(locale)
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: x.siteTitle, template: '%s | Bornit Baltic' },
+    description: x.siteDescription,
+  }
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
+  const path = await getPath()
+  const lang = locale === 'lt' ? 'et' : locale
+
   return (
-    <html lang="et">
+    <html lang={lang}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -26,9 +37,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div dangerouslySetInnerHTML={{ __html: iconDefs }} />
         {/* display: contents, muidu on sticky paise konteiner paise enda korgune ja ei kleepu */}
-        <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html: headerHtml }} />
+        <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html: headerFor(lang, path) }} />
         {children}
-        <div dangerouslySetInnerHTML={{ __html: footerHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: footerFor(lang) }} />
         <Script src="/site.js" strategy="afterInteractive" />
       </body>
     </html>

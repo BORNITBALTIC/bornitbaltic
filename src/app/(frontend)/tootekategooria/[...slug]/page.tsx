@@ -4,6 +4,7 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
 import CategorySidebar from '@/components/CategorySidebar'
+import JsonLd from '@/components/JsonLd'
 import ProductGrid from '@/components/ProductGrid'
 import {
   categoryHref,
@@ -14,6 +15,8 @@ import {
   getRedirectTarget,
 } from '@/lib/catalog'
 import { dict, getLocale } from '@/lib/i18n'
+import { localizePath } from '@/lib/locale-path'
+import { breadcrumbLd, pageMetadata } from '@/lib/seo'
 
 type Params = { slug: string[] }
 
@@ -25,13 +28,17 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>
 }): Promise<Metadata> {
+  const locale = await getLocale()
   const { slug } = await params
-  const category = await getCategoryBySlug(leafSlug(slug))
-  if (!category) return { title: 'Kategooriat ei leitud | Bornit Baltic' }
-  return {
-    title: `${category.name} | Bornit Baltic`,
-    description: category.description || undefined,
-  }
+  const category = await getCategoryBySlug(leafSlug(slug), locale)
+  if (!category) return { title: dict(locale).empty, robots: { index: false } }
+  const d = dict(locale)
+  return pageMetadata({
+    path: categoryHref(category),
+    locale,
+    title: category.name,
+    description: category.description || `${category.name}. ${d.productsLede}`,
+  })
 }
 
 export const dynamic = 'force-dynamic'
@@ -45,7 +52,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
   if (!category) {
     // kategooria on umber nimetatud voi liidetud: suunamine administ, muidu 404
     const target = await getRedirectTarget('/tootekategooria/' + slug.join('/'))
-    if (target) permanentRedirect(target)
+    if (target) permanentRedirect(localizePath(target, locale))
     notFound()
   }
 
@@ -57,18 +64,26 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
 
   const parent = category.parent && typeof category.parent === 'object' ? category.parent : null
 
+  const crumbs = [
+    { name: d.home, path: localizePath('/', locale) },
+    { name: d.products, path: localizePath('/tooted', locale) },
+    ...(parent ? [{ name: parent.name, path: categoryHref(parent, locale) }] : []),
+    { name: category.name, path: categoryHref(category, locale) },
+  ]
+
   return (
     <main className="cat-page">
+      <JsonLd data={breadcrumbLd(crumbs)} />
       <div className="cat-head">
         <div className="wrap">
           <nav className="crumbs" aria-label={d.breadcrumb}>
-            <Link href="/">{d.home}</Link>
+            <Link href={localizePath('/', locale)}>{d.home}</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/tooted">{d.products}</Link>
+            <Link href={localizePath('/tooted', locale)}>{d.products}</Link>
             {parent && (
               <>
                 <span aria-hidden="true">/</span>
-                <Link href={categoryHref(parent)}>{parent.name}</Link>
+                <Link href={categoryHref(parent, locale)}>{parent.name}</Link>
               </>
             )}
             <span aria-hidden="true">/</span>

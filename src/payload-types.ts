@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     products: Product;
     categories: Category;
+    posts: Post;
     media: Media;
     inquiries: Inquiry;
     redirects: Redirect;
@@ -82,6 +83,7 @@ export interface Config {
   collectionsSelect: {
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -346,6 +348,44 @@ export interface Media {
   };
 }
 /**
+ * Lehe "Kasulikku" artiklid. Tekstid on keelte kaupa (keelevalik üleval paremal).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  /**
+   * Ära muuda ilma põhjuseta: vana URL on Google'is indekseeritud.
+   */
+  slug: string;
+  publishedAt?: string | null;
+  cover?: (number | null) | Media;
+  /**
+   * Kuvatakse artiklite nimekirjas ja Google'i otsingutulemuses.
+   */
+  excerpt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  legacyUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inquiries".
  */
@@ -444,6 +484,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'media';
@@ -572,6 +616,21 @@ export interface CategoriesSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  publishedAt?: T;
+  cover?: T;
+  excerpt?: T;
+  content?: T;
+  legacyUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -758,9 +817,16 @@ export interface SiteContent {
    * Nait: Objektid, kus materjal on juba töös
    */
   worksTitle?: string | null;
+  /**
+   * Avalehel näidatakse kuus esimest, kõik tööd on lehel /tehtud-tood. Järjekorda saab lohistada.
+   */
   works?:
     | {
         image: number | Media;
+        /**
+         * Kuvatakse tööde lehel kaanefoto all.
+         */
+        gallery?: (number | Media)[] | null;
         title: string;
         /**
          * Nait: Vuugiliim, praosaneerimine ja märgistus — Harjumaa
@@ -791,6 +857,7 @@ export interface SiteContentSelect<T extends boolean = true> {
     | T
     | {
         image?: T;
+        gallery?: T;
         title?: T;
         meta?: T;
         id?: T;

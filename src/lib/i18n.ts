@@ -1,15 +1,12 @@
-import { cookies } from 'next/headers'
+import { headers } from 'next/headers'
 
 /**
- * Kataloogilehtede keel.
+ * Lehe keel.
  *
- * Paise keelevalik (public/site.js) kirjutab valiku kupsisesse
- * `bornit_lang`. Serveripoolne renderdus loeb selle siit ja kysib
- * Payloadist sisu samas keeles. Payloadi seadistuses on fallback sees,
- * seega tolkimata vali tuleb eesti keeles.
- *
- * URLid jaavad koigis keeltes samaks, sest vana lehe aadressid on
- * Google'is indekseeritud.
+ * Keel tuleb URL-ist: eesti keel ilma eesliiteta, teised /en, /fi, /lv.
+ * Proxy (src/proxy.ts) eemaldab eesliite ja annab keele paisena
+ * `x-bornit-locale`. Nii on igal keelel oma aadress, mida Google naeb.
+ * Payloadi seadistuses on fallback sees, seega tolkimata vali tuleb eesti keeles.
  */
 export const LOCALES = ['et', 'en', 'fi', 'lv', 'lt'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -19,9 +16,15 @@ export const isLocale = (v: unknown): v is Locale =>
   typeof v === 'string' && (LOCALES as readonly string[]).includes(v)
 
 export const getLocale = async (): Promise<Locale> => {
-  const store = await cookies()
-  const value = store.get('bornit_lang')?.value
+  const h = await headers()
+  const value = h.get('x-bornit-locale')
   return isLocale(value) ? value : DEFAULT_LOCALE
+}
+
+/** Keeleta tee, mille proxy lehele kaasa andis (nt /tooted/x). */
+export const getPath = async (): Promise<string> => {
+  const h = await headers()
+  return h.get('x-bornit-path') || '/'
 }
 
 type Dict = {

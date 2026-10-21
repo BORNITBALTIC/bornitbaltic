@@ -3,6 +3,7 @@ import * as migration_20261019_132110_dokumendi_keel from './20261019_132110_dok
 import * as migration_20261019_132606_joonised_jarjestus_suunamised_avaleht from './20261019_132606_joonised_jarjestus_suunamised_avaleht';
 import * as migration_20261019_150000_jarjekord_tahestik from './20261019_150000_jarjekord_tahestik';
 import * as migration_20261019_160000_jarjekord_collation from './20261019_160000_jarjekord_collation';
+import * as migration_20261021_111135_artiklid_toode_galerii from './20261021_111135_artiklid_toode_galerii';
 
 export const migrations = [
   {
@@ -18,16 +19,21 @@ export const migrations = [
   {
     up: migration_20261019_132606_joonised_jarjestus_suunamised_avaleht.up,
     down: migration_20261019_132606_joonised_jarjestus_suunamised_avaleht.down,
-    name: '20261019_132606_joonised_jarjestus_suunamised_avaleht'
+    name: '20261019_132606_joonised_jarjestus_suunamised_avaleht',
   },
   {
     up: migration_20261019_150000_jarjekord_tahestik.up,
     down: migration_20261019_150000_jarjekord_tahestik.down,
-    name: '20261019_150000_jarjekord_tahestik'
+    name: '20261019_150000_jarjekord_tahestik',
   },
   {
     up: migration_20261019_160000_jarjekord_collation.up,
     down: migration_20261019_160000_jarjekord_collation.down,
-    name: '20261019_160000_jarjekord_collation'
+    name: '20261019_160000_jarjekord_collation',
+  },
+  {
+    up: migration_20261021_111135_artiklid_toode_galerii.up,
+    down: migration_20261021_111135_artiklid_toode_galerii.down,
+    name: '20261021_111135_artiklid_toode_galerii'
   },
 ];

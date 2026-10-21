@@ -74,9 +74,21 @@ export const SiteContent: GlobalConfig = {
               type: 'array',
               label: 'Tööd',
               labels: { singular: 'Töö', plural: 'Tööd' },
-              maxRows: 12,
+              maxRows: 30,
+              admin: {
+                description:
+                  'Avalehel näidatakse kuus esimest, kõik tööd on lehel /tehtud-tood. Järjekorda saab lohistada.',
+              },
               fields: [
-                { name: 'image', type: 'upload', relationTo: 'media', label: 'Foto', required: true },
+                { name: 'image', type: 'upload', relationTo: 'media', label: 'Kaanefoto', required: true },
+                {
+                  name: 'gallery',
+                  type: 'upload',
+                  relationTo: 'media',
+                  hasMany: true,
+                  label: 'Lisafotod',
+                  admin: { description: 'Kuvatakse tööde lehel kaanefoto all.' },
+                },
                 { name: 'title', type: 'text', label: 'Objekt', required: true, localized: true },
                 {
                   name: 'meta',

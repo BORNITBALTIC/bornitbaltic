@@ -40,7 +40,7 @@ export default function ProductGrid({
 
         return (
           <li key={product.id} className="prod-card">
-            <Link href={productHref(product)} className="prod-card__link">
+            <Link href={productHref(product, locale)} className="prod-card__link">
               <div className="prod-card__pic">
                 {image?.url ? (
                   <img src={image.url} alt={image.alt || product.title} loading="lazy" />

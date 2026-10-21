@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import type { Category, Product, SiteContent } from '@/payload-types'
 import { DEFAULT_LOCALE, type Locale } from './i18n'
+import { localizePath } from './locale-path'
 
 export type CategoryNode = Category & { children: Category[] }
 
@@ -116,26 +117,26 @@ export const getProductBySlug = async (
  *   /tooted/<peakategooria>/<alamkategooria>/<slug>
  * Kui kategooria on peakategooria, on tee kahesegmendiline.
  */
-export const productHref = (product: Product): string => {
+export const productHref = (product: Product, locale?: string): string => {
   const cat = typeof product.category === 'object' ? product.category : null
-  if (!cat) return `/tooted/${product.slug}`
+  if (!cat) return localizePath(`/tooted/${product.slug}`, locale)
   const parent = cat.parent && typeof cat.parent === 'object' ? cat.parent : null
   const segments = parent ? [parent.slug, cat.slug] : [cat.slug]
-  return `/tooted/${segments.join('/')}/${product.slug}`
+  return localizePath(`/tooted/${segments.join('/')}/${product.slug}`, locale)
 }
 
 /** Alamkategooria URL, kui vanema slug on juba teada (puu ei lae vanemat valja). */
-export const subCategoryHref = (parentSlug: string, childSlug: string): string =>
-  `/tootekategooria/${parentSlug}/${childSlug}`
+export const subCategoryHref = (parentSlug: string, childSlug: string, locale?: string): string =>
+  localizePath(`/tootekategooria/${parentSlug}/${childSlug}`, locale)
 
 /**
  * Kategooria URL. Eeldab, et `parent` on valja laetud (depth >= 1),
  * muidu jaab tee lyhikeseks ja erineb vana lehe indekseeritud URList.
  */
-export const categoryHref = (category: Category): string => {
+export const categoryHref = (category: Category, locale?: string): string => {
   const parent = category.parent && typeof category.parent === 'object' ? category.parent : null
   const segments = parent ? [parent.slug, category.slug] : [category.slug]
-  return `/tootekategooria/${segments.join('/')}`
+  return localizePath(`/tootekategooria/${segments.join('/')}`, locale)
 }
 
 /** Toote pohipilt, kui see on olemas. */
@@ -209,4 +210,31 @@ export const getSiteContent = async (locale: Locale = DEFAULT_LOCALE): Promise<S
   } catch {
     return null
   }
+}
+
+/** Artiklid (Kasulikku), uuemad eespool. */
+export const getPosts = async (locale: Locale = DEFAULT_LOCALE) => {
+  const payload = await client()
+  const { docs } = await payload.find({
+    collection: 'posts',
+    limit: 100,
+    pagination: false,
+    sort: '-publishedAt',
+    depth: 1,
+    locale,
+  })
+  return docs
+}
+
+export const getPostBySlug = async (slug: string, locale: Locale = DEFAULT_LOCALE) => {
+  const payload = await client()
+  const { docs } = await payload.find({
+    collection: 'posts',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    pagination: false,
+    depth: 1,
+    locale,
+  })
+  return docs[0] ?? null
 }
